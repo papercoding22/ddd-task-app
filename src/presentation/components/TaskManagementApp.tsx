@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { useTaskManagement } from '../hooks/useTaskManagement';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const TaskManagementApp: React.FC = () => {
   const currentUserId = 'user-123';
@@ -11,6 +13,7 @@ export const TaskManagementApp: React.FC = () => {
     createTask,
     assignTask,
     completeTask,
+    reopenTask,
     clearEventLog
   } = useTaskManagement(currentUserId);
 
@@ -18,7 +21,14 @@ export const TaskManagementApp: React.FC = () => {
   const [selectedPriority, setSelectedPriority] = useState<'low' | 'medium' | 'high' | 'critical'>('medium');
   const [showEventLog, setShowEventLog] = useState(true);
 
-  const handleCreateTask = async (e: React.FormEvent) => {
+  // Show error toast when error state changes
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
+
+  const handleCreateTask = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTaskTitle.trim()) return;
 
@@ -28,25 +38,45 @@ export const TaskManagementApp: React.FC = () => {
     } catch (err) {
       console.error('Failed to create task:', err);
     }
-  };
+  }, [newTaskTitle, selectedPriority, createTask]);
 
-  const handleAssignToMe = async (taskId: string) => {
+  const handleAssignToMe = useCallback(async (taskId: string) => {
     try {
       await assignTask(taskId, currentUserId);
     } catch (err) {
       console.error('Failed to assign task:', err);
     }
-  };
+  }, [assignTask, currentUserId]);
 
-  const handleComplete = async (taskId: string) => {
+  const handleComplete = useCallback(async (taskId: string) => {
     try {
       await completeTask(taskId);
     } catch (err) {
       console.error('Failed to complete task:', err);
     }
-  };
+  }, [completeTask]);
 
-  const getPriorityColor = (priority: string) => {
+  const handleReopen = useCallback(async (taskId: string) => {
+    try {
+      await reopenTask(taskId);
+      toast.success('Task successfully reopened!');
+    } catch (err) {
+      console.error('Failed to reopen task:', err);
+    }
+  }, [reopenTask]);
+
+  const canReopenTask = useCallback((task: any): boolean => {
+    if (!task.status.isDone() || !task.completedAt) {
+      return false;
+    }
+
+    const completedAt = new Date(task.completedAt);
+    const daysSinceCompletion = (new Date().getTime() - completedAt.getTime()) / (1000 * 60 * 60 * 24);
+
+    return daysSinceCompletion <= 7;
+  }, []);
+
+  const getPriorityColor = useCallback((priority: string) => {
     switch (priority) {
       case 'LOW': return 'bg-blue-100 text-blue-800';
       case 'MEDIUM': return 'bg-yellow-100 text-yellow-800';
@@ -54,16 +84,24 @@ export const TaskManagementApp: React.FC = () => {
       case 'CRITICAL': return 'bg-red-100 text-red-800';
       default: return 'bg-gray-100 text-gray-800';
     }
-  };
+  }, []);
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = useCallback((status: string) => {
     switch (status) {
       case 'TODO': return 'bg-gray-100 text-gray-800';
       case 'IN_PROGRESS': return 'bg-blue-100 text-blue-800';
       case 'DONE': return 'bg-green-100 text-green-800';
       default: return 'bg-gray-100 text-gray-800';
     }
-  };
+  }, []);
+
+  const completedTasksCount = useMemo(() => {
+    return tasks.filter(t => t.status.isDone()).length;
+  }, [tasks]);
+
+  const activeTasksCount = useMemo(() => {
+    return tasks.filter(t => !t.status.isDone()).length;
+  }, [tasks]);
 
   if (loading && tasks.length === 0) {
     return (
@@ -90,22 +128,6 @@ export const TaskManagementApp: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Task Panel */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Error Display */}
-            {error && (
-              <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg">
-                <div className="flex">
-                  <div className="flex-shrink-0">
-                    <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <div className="ml-3">
-                    <p className="text-sm text-red-700">{error}</p>
-                  </div>
-                </div>
-              </div>
-            )}
-
             {/* Create Task Form */}
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h2 className="text-2xl font-semibold mb-4 text-gray-800">Create New Task</h2>
@@ -148,10 +170,10 @@ export const TaskManagementApp: React.FC = () => {
                 </h2>
                 <div className="flex gap-2">
                   <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-                    ✓ {tasks.filter(t => t.status.isDone()).length} Completed
+                    ✓ {completedTasksCount} Completed
                   </span>
                   <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
-                    ⏳ {tasks.filter(t => !t.status.isDone()).length} Active
+                    ⏳ {activeTasksCount} Active
                   </span>
                 </div>
               </div>
@@ -185,14 +207,24 @@ export const TaskManagementApp: React.FC = () => {
                             <h3 className={`text-lg font-semibold ${task.status.isDone() ? 'line-through text-gray-500' : 'text-gray-900'}`}>
                               {task.title.toString()}
                             </h3>
-                            {!task.assignment && !task.status.isDone() && (
-                              <button
-                                onClick={() => handleAssignToMe(task.id.toString())}
-                                className="px-3 py-1 bg-green-500 text-white text-sm rounded-lg hover:bg-green-600 transition"
-                              >
-                                Assign to Me
-                              </button>
-                            )}
+                            <div className="flex gap-2">
+                              {!task.assignment && !task.status.isDone() && (
+                                <button
+                                  onClick={() => handleAssignToMe(task.id.toString())}
+                                  className="px-3 py-1 bg-green-500 text-white text-sm rounded-lg hover:bg-green-600 transition"
+                                >
+                                  Assign to Me
+                                </button>
+                              )}
+                              {canReopenTask(task) && (
+                                <button
+                                  onClick={() => handleReopen(task.id.toString())}
+                                  className="px-3 py-1 bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-600 transition"
+                                >
+                                  🔄 Reopen
+                                </button>
+                              )}
+                            </div>
                           </div>
 
                           <div className="flex flex-wrap gap-2 mb-2">
@@ -299,6 +331,7 @@ export const TaskManagementApp: React.FC = () => {
                       <li>• Create a task</li>
                       <li>• Assign task to yourself</li>
                       <li>• Complete a task</li>
+                      <li>• Reopen a completed task</li>
                       <li>• Check console for details</li>
                     </ul>
                   </div>
@@ -308,6 +341,18 @@ export const TaskManagementApp: React.FC = () => {
           </div>
         </div>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 };

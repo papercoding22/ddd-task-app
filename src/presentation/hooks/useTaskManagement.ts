@@ -23,6 +23,7 @@ export const useTaskManagement = (currentUserId: string) => {
     publisher.subscribe('TaskCompleted', eventLogger);
     publisher.subscribe('TaskAssigned', eventLogger);
     publisher.subscribe('TaskPriorityEscalated', eventLogger);
+    publisher.subscribe('TaskReopened', eventLogger);
 
     loadTasks();
   }, []);
@@ -85,6 +86,17 @@ export const useTaskManagement = (currentUserId: string) => {
     }
   };
 
+  const reopenTask = async (taskId: string) => {
+    try {
+      setError(null);
+      await container.reopenTaskUseCase.execute(taskId, currentUserId);
+      await loadTasks();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to reopen task');
+      throw err;
+    }
+  };
+
   const clearEventLog = () => {
     setEventLog([]);
   };
@@ -97,6 +109,7 @@ export const useTaskManagement = (currentUserId: string) => {
     createTask,
     assignTask,
     completeTask,
+    reopenTask,
     clearEventLog,
     refreshTasks: loadTasks
   };
