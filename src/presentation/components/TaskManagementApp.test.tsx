@@ -17,7 +17,9 @@ describe('TaskManagementApp', () => {
   const mockCreateTask = vi.fn();
   const mockAssignTask = vi.fn();
   const mockCompleteTask = vi.fn();
+  const mockReopenTask = vi.fn();
   const mockClearEventLog = vi.fn();
+  const mockRefreshTasks = vi.fn();
 
   const defaultHookReturn = {
     tasks: [],
@@ -27,7 +29,9 @@ describe('TaskManagementApp', () => {
     createTask: mockCreateTask,
     assignTask: mockAssignTask,
     completeTask: mockCompleteTask,
+    reopenTask: mockReopenTask,
     clearEventLog: mockClearEventLog,
+    refreshTasks: mockRefreshTasks,
   };
 
   beforeEach(() => {

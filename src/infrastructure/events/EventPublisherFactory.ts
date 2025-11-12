@@ -2,6 +2,7 @@ import { DomainEventPublisher } from '../../application/services/DomainEventPubl
 import { TaskCompletedEventHandler } from '../../application/eventHandlers/TaskCompletedEventHandler';
 import { TaskAssignedEventHandler } from '../../application/eventHandlers/TaskAssignedEventHandler';
 import { TaskPriorityEscalatedEventHandler } from '../../application/eventHandlers/TaskPriorityEscalatedEventHandler';
+import { TaskReopenedEventHandler } from '../../application/eventHandlers/TaskReopenedEventHandler';
 
 export class EventPublisherFactory {
   static create(): DomainEventPublisher {
@@ -10,10 +11,12 @@ export class EventPublisherFactory {
     const taskCompletedHandler = new TaskCompletedEventHandler();
     const taskAssignedHandler = new TaskAssignedEventHandler();
     const priorityEscalatedHandler = new TaskPriorityEscalatedEventHandler();
+    const taskReopenedHandler = new TaskReopenedEventHandler();
 
     publisher.subscribe('TaskCompleted', (event) => taskCompletedHandler.handle(event));
     publisher.subscribe('TaskAssigned', (event) => taskAssignedHandler.handle(event));
     publisher.subscribe('TaskPriorityEscalated', (event) => priorityEscalatedHandler.handle(event));
+    publisher.subscribe('TaskReopened', (event) => taskReopenedHandler.handle(event));
 
     publisher.subscribe('TaskCompleted', async (event) => {
       console.log('📈 Secondary handler: Updating dashboard metrics');

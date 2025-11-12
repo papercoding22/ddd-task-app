@@ -9,6 +9,7 @@ import { DomainEvent } from '../events/DomainEvent';
 import { TaskCompletedEvent } from '../events/TaskCompletedEvent';
 import { TaskAssignedEvent } from '../events/TaskAssignedEvent';
 import { TaskPriorityEscalatedEvent } from '../events/TaskPriorityEscalatedEvent';
+import { TaskReopenedEvent } from '../events/TaskReopenedEvent';
 
 interface TaskProps {
   id: TaskId;
@@ -220,8 +221,30 @@ export class Task {
       throw new Error('Can only reopen completed tasks');
     }
 
+    if (!this.props.completedAt) {
+      throw new Error('Task has no completion date');
+    }
+
+    // Check if task was completed within 24 hours
+    const hoursSinceCompletion = (new Date().getTime() - this.props.completedAt.getTime()) / (1000 * 60 * 60);
+    if (hoursSinceCompletion > 24) {
+      throw new Error('Can only reopen tasks completed within 24 hours');
+    }
+
+    // Check if user is the original task owner
+    if (this.props.assignment && !this.props.assignment.isAssignedTo(userId)) {
+      throw new Error('Only the original task owner can reopen this task');
+    }
+
+    const reopenedAt = new Date();
     this.props.status = TaskStatus.todo();
     this.props.completedAt = undefined;
+
+    this.addDomainEvent(new TaskReopenedEvent(
+      this.props.id,
+      userId,
+      reopenedAt
+    ));
   }
 
   isOverdue(): boolean {

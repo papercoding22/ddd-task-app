@@ -5,6 +5,7 @@ import { EventPublisherFactory } from '../events/EventPublisherFactory';
 import { CreateTaskUseCase } from '../../application/useCases/CreateTaskUseCase';
 import { AssignTaskUseCase } from '../../application/useCases/AssignTaskUseCase';
 import { CompleteTaskUseCase } from '../../application/useCases/CompleteTaskUseCase';
+import { ReopenTaskUseCase } from '../../application/useCases/ReopenTaskUseCase';
 import { GetAllTasksUseCase } from '../../application/useCases/GetAllTasksUseCase';
 
 export class ServiceContainer {
@@ -47,6 +48,10 @@ export class ServiceContainer {
 
   get completeTaskUseCase(): CompleteTaskUseCase {
     return new CompleteTaskUseCase(this.taskRepository, this.eventPublisher);
+  }
+
+  get reopenTaskUseCase(): ReopenTaskUseCase {
+    return new ReopenTaskUseCase(this.taskRepository, this.eventPublisher);
   }
 
   get getAllTasksUseCase(): GetAllTasksUseCase {
