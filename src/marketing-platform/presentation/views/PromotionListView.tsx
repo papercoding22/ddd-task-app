@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { format } from "date-fns";
 import { useGetPromotions } from "../hooks/useGetPromotions";
 import type {
   PromotionApplication,
@@ -150,7 +151,7 @@ const DateRange: React.FC<{ startDate: Date; endDate: Date }> = ({
     <div className="flex items-center gap-2 text-xs text-gray-500">
       <span>📅</span>
       <span className="font-medium">
-        {startDate.toLocaleDateString()} - {endDate.toLocaleDateString()}
+        {format(startDate, "yyyy-MM-dd")} - {format(endDate, "yyyy-MM-dd")}
       </span>
     </div>
   </div>
@@ -268,6 +269,10 @@ const DownloadableCouponCard: React.FC<PromotionCardProps> = ({
 }) => {
   const coupon = application.getPromotion() as unknown as DownloadableCoupon;
 
+  const lastDayToRedeem = coupon.calculateCouponExpirationDate(
+    coupon.getEndDate()
+  );
+
   return (
     <PromotionCardWrapper
       isSelected={isSelected}
@@ -309,10 +314,7 @@ const DownloadableCouponCard: React.FC<PromotionCardProps> = ({
         />
       </div>
 
-      <DateRange
-        startDate={coupon.getStartDate()}
-        endDate={coupon.getEndDate()}
-      />
+      <DateRange startDate={coupon.getStartDate()} endDate={lastDayToRedeem} />
 
       <StatusIndicators
         isActive={application.isActive()}
@@ -337,6 +339,10 @@ const RewardCouponCard: React.FC<PromotionCardProps> = ({
   typeInfo,
 }) => {
   const coupon = application.getPromotion() as unknown as RewardCoupon;
+
+  const lastDayToRedeem = coupon.calculateCouponExpirationDate(
+    coupon.getEndDate()
+  );
 
   return (
     <PromotionCardWrapper
@@ -384,10 +390,7 @@ const RewardCouponCard: React.FC<PromotionCardProps> = ({
         />
       </div>
 
-      <DateRange
-        startDate={coupon.getStartDate()}
-        endDate={coupon.getEndDate()}
-      />
+      <DateRange startDate={coupon.getStartDate()} endDate={lastDayToRedeem} />
 
       <StatusIndicators
         isActive={application.isActive()}

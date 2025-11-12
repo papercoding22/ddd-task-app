@@ -3,17 +3,11 @@ import {
   PromotionType,
   DistributionType,
   ProductType,
-  ApplicationStatus,
   ImageType,
   ExhaustionAlarmPercentages,
   YesNo,
   FlexibleDaysType,
 } from "../types";
-import {
-  InsufficientBudgetException,
-  CouponExpiredException,
-  MinimumPaymentNotMetException,
-} from "../exceptions/PromotionExceptions";
 
 /**
  * Reward Coupon entity

@@ -3,7 +3,6 @@ import {
   PromotionType,
   DistributionType,
   ProductType,
-  ApplicationStatus,
   ImageType,
   ExhaustionAlarmPercentages,
   YesNo,

@@ -3,14 +3,12 @@ import {
   PromotionType,
   DistributionType,
   ProductType,
-  ApplicationStatus,
   ImageType,
   ExhaustionAlarmPercentages,
   YesNo,
   FlexibleDaysType,
 } from "../types";
 import {
-  DownloadLimitExceededException,
   CouponExpiredException,
   InvalidCouponQuantityException,
 } from "../exceptions/PromotionExceptions";
