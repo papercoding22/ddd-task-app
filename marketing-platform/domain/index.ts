@@ -26,6 +26,9 @@ export {
   InvalidPointCalculationException,
 } from "./exceptions/PromotionExceptions";
 
+// Repositories
+export { IPromotionApplicationRepository } from "./repositories/IPromotionApplicationRepository";
+
 // Types
 export type {
   PromotionType,
@@ -49,4 +52,6 @@ export type {
   PaymentInfo,
   EarlyEndInfo,
   ReviewDetail,
+  PromotionSavingType,
+  ClientLimitType,
 } from "./types";

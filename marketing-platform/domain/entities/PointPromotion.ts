@@ -1,22 +1,18 @@
-import { Promotion } from './Promotion';
+import { Promotion } from "./Promotion";
 import {
   PromotionType,
   DistributionType,
   ProductType,
-  ApplicationStatus,
   ImageType,
   ExhaustionAlarmPercentages,
   YesNo,
-} from '../types';
+} from "../types";
 import {
   InvalidPercentageException,
   InsufficientBudgetException,
   MinimumPaymentNotMetException,
   InvalidPointCalculationException,
-} from '../exceptions/PromotionExceptions';
-
-type PromotionSavingType = 'FIXED_RATE' | 'FIXED_POINT';
-type ClientLimitType = 'NONE' | 'DAILY' | 'WEEKLY' | 'MONTHLY';
+} from "../exceptions/PromotionExceptions";
 
 /**
  * Point Promotion entity
@@ -41,13 +37,9 @@ export class PointPromotion extends Promotion {
   private remainingPointPercentage: number;
 
   constructor(params: {
-    applySeq: number;
     title: string;
-    merchantId: string;
-    merchantName: string;
     startDate: Date;
     endDate: Date;
-    applicationStatus: ApplicationStatus;
     promotionType: PromotionType;
     distributionType: DistributionType;
     productType: ProductType;
@@ -77,7 +69,10 @@ export class PointPromotion extends Promotion {
   }) {
     super(params);
 
-    this.validateSavingRate(params.promotionSavingRate, params.promotionSavingType);
+    this.validateSavingRate(
+      params.promotionSavingRate,
+      params.promotionSavingType
+    );
     this.validateBudget(params.promotionBudget);
 
     this.promotionName = params.promotionName;
@@ -102,8 +97,11 @@ export class PointPromotion extends Promotion {
   /**
    * Validates the saving rate for fixed rate promotions
    */
-  private validateSavingRate(rate: number | null, type: PromotionSavingType): void {
-    if (type === 'FIXED_RATE' && rate !== null) {
+  private validateSavingRate(
+    rate: number | null,
+    type: PromotionSavingType
+  ): void {
+    if (type === "FIXED_RATE" && rate !== null) {
       if (rate < 0 || rate > 100) {
         throw new InvalidPercentageException(rate);
       }
@@ -115,7 +113,9 @@ export class PointPromotion extends Promotion {
    */
   private validateBudget(budget: number): void {
     if (budget <= 0) {
-      throw new InvalidPointCalculationException('Promotion budget must be positive');
+      throw new InvalidPointCalculationException(
+        "Promotion budget must be positive"
+      );
     }
   }
 
@@ -140,7 +140,7 @@ export class PointPromotion extends Promotion {
    * Checks if the payment amount meets the minimum requirement
    */
   public meetsMinimumPayment(paymentAmount: number): boolean {
-    if (this.minimumPaymentPriceYn === 'Y') {
+    if (this.minimumPaymentPriceYn === "Y") {
       return paymentAmount >= this.minimumPaymentPrice;
     }
     return true;
@@ -156,10 +156,13 @@ export class PointPromotion extends Promotion {
 
     let calculatedPoints = 0;
 
-    if (this.promotionSavingType === 'FIXED_RATE' && this.promotionSavingRate !== null) {
+    if (
+      this.promotionSavingType === "FIXED_RATE" &&
+      this.promotionSavingRate !== null
+    ) {
       calculatedPoints = (paymentAmount * this.promotionSavingRate) / 100;
     } else if (
-      this.promotionSavingType === 'FIXED_POINT' &&
+      this.promotionSavingType === "FIXED_POINT" &&
       this.promotionSavingPoint !== null
     ) {
       calculatedPoints = this.promotionSavingPoint;
@@ -181,13 +184,16 @@ export class PointPromotion extends Promotion {
     this.ensureActive();
 
     if (!this.meetsMinimumPayment(paymentAmount)) {
-      throw new MinimumPaymentNotMetException(this.minimumPaymentPrice, paymentAmount);
+      throw new MinimumPaymentNotMetException(
+        this.minimumPaymentPrice,
+        paymentAmount
+      );
     }
 
     const pointReward = this.calculatePointReward(paymentAmount);
 
     if (pointReward === 0) {
-      throw new InsufficientBudgetException('No points available for reward');
+      throw new InsufficientBudgetException("No points available for reward");
     }
 
     if (!this.hasSufficientPoints(pointReward)) {
@@ -215,7 +221,10 @@ export class PointPromotion extends Promotion {
   /**
    * Checks if the promotion can be applied to a payment
    */
-  public canApply(paymentAmount: number, currentDate: Date = new Date()): boolean {
+  public canApply(
+    paymentAmount: number,
+    currentDate: Date = new Date()
+  ): boolean {
     const pointReward = this.calculatePointReward(paymentAmount);
     return (
       this.isActive(currentDate) &&
@@ -230,15 +239,21 @@ export class PointPromotion extends Promotion {
    * Note: This is a simplified version. In production, you'd need to track per-user usage
    */
   public canUserApply(userUsageCount: number, userUsedPoints: number): boolean {
-    if (this.clientLimitType === 'NONE') {
+    if (this.clientLimitType === "NONE") {
       return true;
     }
 
-    if (this.clientLimitCount !== null && userUsageCount >= this.clientLimitCount) {
+    if (
+      this.clientLimitCount !== null &&
+      userUsageCount >= this.clientLimitCount
+    ) {
       return false;
     }
 
-    if (this.clientLimitPoint !== null && userUsedPoints >= this.clientLimitPoint) {
+    if (
+      this.clientLimitPoint !== null &&
+      userUsedPoints >= this.clientLimitPoint
+    ) {
       return false;
     }
 

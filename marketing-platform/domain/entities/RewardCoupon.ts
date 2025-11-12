@@ -24,13 +24,9 @@ export class RewardCoupon extends Coupon {
   private couponGrantMinPrice: number | null;
 
   constructor(params: {
-    applySeq: number;
     title: string;
-    merchantId: string;
-    merchantName: string;
     startDate: Date;
     endDate: Date;
-    applicationStatus: ApplicationStatus;
     promotionType: PromotionType;
     distributionType: DistributionType;
     productType: ProductType;
@@ -101,21 +97,6 @@ export class RewardCoupon extends Coupon {
   ): boolean {
     const validityEndDate = this.calculateCouponExpirationDate(issueDate);
     return currentDate <= validityEndDate;
-  }
-
-  /**
-   * Validates that a coupon is not expired
-   */
-  private validateCouponNotExpired(
-    issueDate: Date,
-    currentDate: Date = new Date()
-  ): void {
-    if (!this.isCouponValid(issueDate, currentDate)) {
-      const validityEndDate = this.calculateCouponExpirationDate(issueDate);
-      throw new CouponExpiredException(
-        `Coupon expired on ${validityEndDate.toISOString()}`
-      );
-    }
   }
 
   /**

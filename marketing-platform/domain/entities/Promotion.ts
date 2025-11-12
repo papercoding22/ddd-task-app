@@ -102,6 +102,18 @@ export abstract class Promotion {
   }
 
   /**
+   * Ensures that the promotion is currently active
+   * @throws Error if the promotion is not active
+   */
+  protected ensureActive(currentDate: Date = new Date()): void {
+    if (!this.isWithinValidPeriod(currentDate)) {
+      throw new Error(
+        `Promotion is not active. Valid period: ${this.startDate.toISOString()} - ${this.endDate.toISOString()}`
+      );
+    }
+  }
+
+  /**
    * Updates the image information
    */
   public updateImage(
