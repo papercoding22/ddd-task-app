@@ -6,6 +6,8 @@ import {
   ImageType,
   ExhaustionAlarmPercentages,
   YesNo,
+  PromotionSavingType,
+  ClientLimitType,
 } from "../types";
 import {
   InvalidPercentageException,
