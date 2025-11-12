@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { Task } from '../../domain/entities/Task';
-import { TaskPriority } from '../../domain/valueObjects/TaskPriority';
-import { ServiceContainer } from '../../infrastructure/di/ServiceContainer';
+import { useState, useEffect } from "react";
+import { Task } from "../../domain/entities/Task";
+import { TaskPriority } from "../../domain/valueObjects/TaskPriority";
+import { ServiceContainer } from "../../infrastructure/di/ServiceContainer";
 
 export const useTaskManagement = (currentUserId: string) => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -17,15 +17,34 @@ export const useTaskManagement = (currentUserId: string) => {
     const eventLogger = (event: any) => {
       const timestamp = new Date().toLocaleTimeString();
       const logMessage = `[${timestamp}] ${event.eventType}`;
-      setEventLog(prev => [logMessage, ...prev].slice(0, 20));
+      setEventLog((prev) => [logMessage, ...prev].slice(0, 20));
     };
 
-    publisher.subscribe('TaskCompleted', eventLogger);
-    publisher.subscribe('TaskAssigned', eventLogger);
-    publisher.subscribe('TaskPriorityEscalated', eventLogger);
-    publisher.subscribe('TaskReopened', eventLogger);
+    const taskCompletedListener = publisher.subscribe(
+      "TaskCompleted",
+      eventLogger
+    );
+    const taskAssignedListener = publisher.subscribe(
+      "TaskAssigned",
+      eventLogger
+    );
+    const taskPriorityEscalatedListener = publisher.subscribe(
+      "TaskPriorityEscalated",
+      eventLogger
+    );
+    const taskReopenedListener = publisher.subscribe(
+      "TaskReopened",
+      eventLogger
+    );
 
     loadTasks();
+
+    return () => {
+      taskCompletedListener();
+      taskAssignedListener();
+      taskPriorityEscalatedListener();
+      taskReopenedListener();
+    };
   }, []);
 
   const loadTasks = async () => {
@@ -34,7 +53,7 @@ export const useTaskManagement = (currentUserId: string) => {
       const allTasks = await container.getAllTasksUseCase.execute();
       setTasks(allTasks);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load tasks');
+      setError(err instanceof Error ? err.message : "Failed to load tasks");
     } finally {
       setLoading(false);
     }
@@ -42,24 +61,31 @@ export const useTaskManagement = (currentUserId: string) => {
 
   const createTask = async (
     title: string,
-    priority: 'low' | 'medium' | 'high' | 'critical' = 'medium',
+    priority: "low" | "medium" | "high" | "critical" = "medium",
     dueDate?: Date
   ) => {
     try {
       setError(null);
-      
+
       let taskPriority: TaskPriority;
       switch (priority) {
-        case 'low': taskPriority = TaskPriority.low(); break;
-        case 'high': taskPriority = TaskPriority.high(); break;
-        case 'critical': taskPriority = TaskPriority.critical(); break;
-        default: taskPriority = TaskPriority.medium();
+        case "low":
+          taskPriority = TaskPriority.low();
+          break;
+        case "high":
+          taskPriority = TaskPriority.high();
+          break;
+        case "critical":
+          taskPriority = TaskPriority.critical();
+          break;
+        default:
+          taskPriority = TaskPriority.medium();
       }
 
       await container.createTaskUseCase.execute(title, taskPriority, dueDate);
       await loadTasks();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create task');
+      setError(err instanceof Error ? err.message : "Failed to create task");
       throw err;
     }
   };
@@ -67,10 +93,14 @@ export const useTaskManagement = (currentUserId: string) => {
   const assignTask = async (taskId: string, assignedToUserId: string) => {
     try {
       setError(null);
-      await container.assignTaskUseCase.execute(taskId, assignedToUserId, currentUserId);
+      await container.assignTaskUseCase.execute(
+        taskId,
+        assignedToUserId,
+        currentUserId
+      );
       await loadTasks();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to assign task');
+      setError(err instanceof Error ? err.message : "Failed to assign task");
       throw err;
     }
   };
@@ -81,7 +111,7 @@ export const useTaskManagement = (currentUserId: string) => {
       await container.completeTaskUseCase.execute(taskId, currentUserId);
       await loadTasks();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to complete task');
+      setError(err instanceof Error ? err.message : "Failed to complete task");
       throw err;
     }
   };
@@ -92,7 +122,7 @@ export const useTaskManagement = (currentUserId: string) => {
       await container.reopenTaskUseCase.execute(taskId, currentUserId);
       await loadTasks();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to reopen task');
+      setError(err instanceof Error ? err.message : "Failed to reopen task");
       throw err;
     }
   };
@@ -111,6 +141,6 @@ export const useTaskManagement = (currentUserId: string) => {
     completeTask,
     reopenTask,
     clearEventLog,
-    refreshTasks: loadTasks
+    refreshTasks: loadTasks,
   };
 };
