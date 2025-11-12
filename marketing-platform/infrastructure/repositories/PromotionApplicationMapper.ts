@@ -19,12 +19,16 @@ import {
   RewardCoupon,
   YesNo,
   PromotionSavingType,
+  ReviewDetail,
+  EarlyEndInfo,
 } from "../../domain";
 
 import { ApiPromotionDto } from "./ApiPromotionDto";
 
-const mapPointPromotion = (data: ApiPromotionDto): PromotionApplication => {
-  const pointPromotionData = data.pointPromotion;
+const mapPointPromotion = (
+  promotionData: ApiPromotionDto
+): PromotionApplication => {
+  const pointPromotionData = promotionData.pointPromotion;
 
   if (!pointPromotionData) {
     throw new Error("Point promotion data is missing");
@@ -32,11 +36,11 @@ const mapPointPromotion = (data: ApiPromotionDto): PromotionApplication => {
 
   const pointPromotion = new PointPromotion({
     title: pointPromotionData.title,
-    startDate: new Date(data.startDate),
-    endDate: new Date(data.endDate),
-    promotionType: data.promotionType as PromotionType,
-    distributionType: data.distributionType as DistributionType,
-    productType: data.productType as ProductType,
+    startDate: new Date(promotionData.startDate),
+    endDate: new Date(promotionData.endDate),
+    promotionType: promotionData.promotionType as PromotionType,
+    distributionType: promotionData.distributionType as DistributionType,
+    productType: promotionData.productType as ProductType,
     imageType: pointPromotionData.imageType as ImageType,
     imageObsId: pointPromotionData.imageObsId,
     imageObsHash: pointPromotionData.imageObsHash,
@@ -64,23 +68,26 @@ const mapPointPromotion = (data: ApiPromotionDto): PromotionApplication => {
   });
 
   const promotionOrder = new PromotionOrder({
-    orderStatus: data.orderStatus as OrderStatusType,
-    paymentType: data.paymentType as PaymentType,
-    paymentDate: new Date(data.paymentDate),
-    finalPaymentPrice: data.finalPaymentPrice,
-    paymentInfo: data.paymentInfo as PaymentInfo,
+    orderStatus: promotionData.orderStatus as OrderStatusType,
+    paymentType: promotionData.paymentType as PaymentType,
+    paymentDate: new Date(promotionData.paymentDate),
+    finalPaymentPrice: promotionData.finalPaymentPrice,
+    paymentInfo: promotionData.paymentInfo as PaymentInfo,
   });
 
   const promotion = new PromotionApplication({
-    applySeq: data.applySeq,
-    countryType: data.countryType as CountryType,
-    merchantId: data.merchantId,
-    merchantName: data.merchantName,
-    managerEmail: data.managerEmail,
-    applicationRouteType: data.applicationRouteType as ApplicationRouteType,
-    appliedByAdmin: data.appliedByAdmin as YesNo,
-    appliedAt: new Date(data.appliedAt),
-    applicationStatus: data.applicationStatus as ApplicationStatus,
+    applySeq: promotionData.applySeq,
+    countryType: promotionData.countryType as CountryType,
+    merchantId: promotionData.merchantId,
+    merchantName: promotionData.merchantName,
+    managerEmail: promotionData.managerEmail,
+    applicationRouteType:
+      promotionData.applicationRouteType as ApplicationRouteType,
+    appliedByAdmin: promotionData.appliedByAdmin as YesNo,
+    appliedAt: new Date(promotionData.appliedAt),
+    applicationStatus: promotionData.applicationStatus as ApplicationStatus,
+    reviewDetail: promotionData.reviewDetail as ReviewDetail,
+    earlyEndInfo: promotionData.earlyEndInfo as EarlyEndInfo[],
     promotion: pointPromotion,
     promotionOrder: promotionOrder,
   });
@@ -88,8 +95,10 @@ const mapPointPromotion = (data: ApiPromotionDto): PromotionApplication => {
   return promotion;
 };
 
-const mapDownloadableCoupon = (data: ApiPromotionDto): PromotionApplication => {
-  const downloadableCouponData = data.pointCoupon;
+const mapDownloadableCoupon = (
+  promotionData: ApiPromotionDto
+): PromotionApplication => {
+  const downloadableCouponData = promotionData.pointCoupon;
 
   if (!downloadableCouponData) {
     throw new Error("Downloadable coupon data is missing");
@@ -97,11 +106,11 @@ const mapDownloadableCoupon = (data: ApiPromotionDto): PromotionApplication => {
 
   const downloadableCoupon = new DownloadableCoupon({
     title: downloadableCouponData.title,
-    startDate: new Date(data.startDate),
-    endDate: new Date(data.endDate),
-    promotionType: data.promotionType as PromotionType,
-    distributionType: data.distributionType as DistributionType,
-    productType: data.productType as ProductType,
+    startDate: new Date(promotionData.startDate),
+    endDate: new Date(promotionData.endDate),
+    promotionType: promotionData.promotionType as PromotionType,
+    distributionType: promotionData.distributionType as DistributionType,
+    productType: promotionData.productType as ProductType,
     imageType: downloadableCouponData.imageType as ImageType,
     imageObsId: downloadableCouponData.imageObsId,
     imageObsHash: downloadableCouponData.imageObsHash,
@@ -131,23 +140,26 @@ const mapDownloadableCoupon = (data: ApiPromotionDto): PromotionApplication => {
   });
 
   const promotionOrder = new PromotionOrder({
-    orderStatus: data.orderStatus as OrderStatusType,
-    paymentType: data.paymentType as PaymentType,
-    paymentDate: new Date(data.paymentDate),
-    finalPaymentPrice: data.finalPaymentPrice,
-    paymentInfo: data.paymentInfo as PaymentInfo,
+    orderStatus: promotionData.orderStatus as OrderStatusType,
+    paymentType: promotionData.paymentType as PaymentType,
+    paymentDate: new Date(promotionData.paymentDate),
+    finalPaymentPrice: promotionData.finalPaymentPrice,
+    paymentInfo: promotionData.paymentInfo as PaymentInfo,
   });
 
   const promotion = new PromotionApplication({
-    applySeq: data.applySeq,
-    countryType: data.countryType as CountryType,
-    merchantId: data.merchantId,
-    merchantName: data.merchantName,
-    managerEmail: data.managerEmail,
-    applicationRouteType: data.applicationRouteType as ApplicationRouteType,
-    appliedByAdmin: data.appliedByAdmin as YesNo,
-    appliedAt: new Date(data.appliedAt),
-    applicationStatus: data.applicationStatus as ApplicationStatus,
+    applySeq: promotionData.applySeq,
+    countryType: promotionData.countryType as CountryType,
+    merchantId: promotionData.merchantId,
+    merchantName: promotionData.merchantName,
+    managerEmail: promotionData.managerEmail,
+    applicationRouteType:
+      promotionData.applicationRouteType as ApplicationRouteType,
+    appliedByAdmin: promotionData.appliedByAdmin as YesNo,
+    appliedAt: new Date(promotionData.appliedAt),
+    applicationStatus: promotionData.applicationStatus as ApplicationStatus,
+    reviewDetail: promotionData.reviewDetail as ReviewDetail,
+    earlyEndInfo: promotionData.earlyEndInfo as EarlyEndInfo[],
     promotion: downloadableCoupon,
     promotionOrder: promotionOrder,
   });
@@ -210,6 +222,8 @@ const mapRewardCoupon = (
     appliedByAdmin: promotionData.appliedByAdmin as YesNo,
     appliedAt: new Date(promotionData.appliedAt),
     applicationStatus: promotionData.applicationStatus as ApplicationStatus,
+    reviewDetail: promotionData.reviewDetail as ReviewDetail,
+    earlyEndInfo: promotionData.earlyEndInfo as EarlyEndInfo[],
     promotion: rewardCoupon,
     promotionOrder: promotionOrder,
   });

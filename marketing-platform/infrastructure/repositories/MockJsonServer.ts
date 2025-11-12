@@ -2,9 +2,9 @@ import {
   IPromotionApplicationRepository,
   PromotionApplication,
 } from "../../domain";
-import downloadableCouponDetails from "../../tmp/downloadable-coupon-details.json";
-import pointPromotionDetails from "../../tmp/point-promotion-details.json";
-import rewardCouponDetails from "../../tmp/reward-coupon-details.json";
+import downloadableCouponDetails from "./mock/downloadable-coupon-details.json";
+import pointPromotionDetails from "./mock/point-promotion-details.json";
+import rewardCouponDetails from "./mock/reward-coupon-details.json";
 import { ApiPromotionDto } from "./ApiPromotionDto";
 import { PromotionApplicationMapper } from "./PromotionApplicationMapper";
 
@@ -16,7 +16,11 @@ const MOCK_DATA_BY_ID: {
   1003: rewardCouponDetails,
 } as const;
 
-type ServerData = unknown;
+const MOCK_PROMOTION_LIST = [
+  pointPromotionDetails,
+  downloadableCouponDetails,
+  rewardCouponDetails,
+] as const;
 
 export class MockJsonServer implements IPromotionApplicationRepository {
   save(application: PromotionApplication): Promise<void> {
@@ -31,7 +35,10 @@ export class MockJsonServer implements IPromotionApplicationRepository {
   }
 
   findAll(): Promise<PromotionApplication[]> {
-    throw new Error("Method not implemented.");
+    const promotionApplications = MOCK_PROMOTION_LIST.map((apiDto) =>
+      PromotionApplicationMapper.fromApiDto(apiDto as ApiPromotionDto)
+    );
+    return Promise.resolve(promotionApplications);
   }
 
   delete(applySeq: number): Promise<void> {

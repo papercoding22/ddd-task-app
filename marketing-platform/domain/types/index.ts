@@ -62,6 +62,22 @@ export type ExposureStatus = "ON" | "OFF";
 
 export type CountryType = "TW" | "JP" | "TH" | "ID";
 
+export type ReviewDetailCategoryType = "DESIGN" | "TEXT" | "OTHER";
+
+export type EarlyEndRequestStatusType =
+  | "PROCESSING_REQUIRED"
+  | "REJECTED"
+  | "COMPLETED"
+  | "CANCELED"
+  | "WITHDRAWN"
+  | "INVALID_REQUEST";
+
+export type EarlyEndRequestRouteType = "MERCHANT_CENTER" | "GOOD_PARTNER";
+export type EarlyEndRequestType =
+  | "AD_CONTENT"
+  | "EARLY_END"
+  | "OA_PUSH_CONTENT";
+
 /**
  * Payment Info interface
  * Contains payment and order details for a promotion application
@@ -79,10 +95,18 @@ export interface PaymentInfo {
  * Contains information about early termination of a promotion
  */
 export interface EarlyEndInfo {
-  reason?: string;
-  requestedAt?: string;
-  approvedAt?: string;
-  [key: string]: any;
+  marketingEditRequestSeq: number;
+  applySeq: number;
+  merchantId: string;
+  requestStatus: EarlyEndRequestStatusType;
+  requestRouteType: EarlyEndRequestRouteType;
+  requestType: EarlyEndRequestType;
+  rejectReason: string | null;
+  completedAt: string | null;
+  createdAt: string | null;
+  createdBy: string | null;
+  updatedAt: string | null;
+  updatedBy: string | null;
 }
 
 /**
@@ -90,11 +114,16 @@ export interface EarlyEndInfo {
  * Contains review information for promotion applications
  */
 export interface ReviewDetail {
-  reviewedAt?: string;
-  reviewedBy?: string;
-  comments?: string;
-  status?: string;
-  [key: string]: any;
+  exposureType: ExposureType;
+  exposureAreaType: ExposureAreaType;
+  exposureAreaTypeDesc: string;
+  category: ReviewDetailCategoryType;
+  title: string | null;
+  description: string | null;
+  referenceFiles?: {
+    name: string | null;
+    url: string | null;
+  }[];
 }
 
 /**
