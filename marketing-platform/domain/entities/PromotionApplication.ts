@@ -15,11 +15,17 @@ import {
  * order information, review status, and lifecycle management
  */
 export class PromotionApplication {
+
+  // Basic details
   private readonly applySeq: number;
   private readonly countryType: CountryType;
+
+  // Merchant details
   private readonly merchantId: string;
   private readonly merchantName: string;
   private readonly managerEmail: string;
+  
+  // Application details
   private readonly applicationRouteType: ApplicationRouteType;
   private readonly appliedAt: Date;
   private applicationStatus: ApplicationStatus;
