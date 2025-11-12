@@ -1,5 +1,6 @@
 import { IPromotionApplicationRepository } from "../../domain";
 import { MockJsonServer } from "../repositories/MockJsonServer";
+import { GetAllPromotionsUseCase } from "../../application";
 
 /**
  * ServiceContainer acts as a Dependency Injection container
@@ -8,10 +9,16 @@ import { MockJsonServer } from "../repositories/MockJsonServer";
 export class ServiceContainer {
   private static instance: ServiceContainer;
   private promotionApplicationRepository: IPromotionApplicationRepository;
+  private getAllPromotionsUseCase: GetAllPromotionsUseCase;
 
   private constructor() {
     // Initialize repositories
     this.promotionApplicationRepository = new MockJsonServer();
+
+    // Initialize use cases with dependencies
+    this.getAllPromotionsUseCase = new GetAllPromotionsUseCase(
+      this.promotionApplicationRepository
+    );
   }
 
   /**
@@ -29,6 +36,13 @@ export class ServiceContainer {
    */
   public getPromotionApplicationRepository(): IPromotionApplicationRepository {
     return this.promotionApplicationRepository;
+  }
+
+  /**
+   * Get the GetAllPromotionsUseCase instance
+   */
+  public getGetAllPromotionsUseCase(): GetAllPromotionsUseCase {
+    return this.getAllPromotionsUseCase;
   }
 
   /**

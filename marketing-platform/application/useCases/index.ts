@@ -1,0 +1,1 @@
+export { GetAllPromotionsUseCase } from "./GetAllPromotionsUseCase";
