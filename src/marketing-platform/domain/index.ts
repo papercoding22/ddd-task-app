@@ -27,7 +27,7 @@ export {
 } from "./exceptions/PromotionExceptions";
 
 // Repositories
-export { IPromotionApplicationRepository } from "./repositories/IPromotionApplicationRepository";
+export type { IPromotionApplicationRepository } from "./repositories/IPromotionApplicationRepository";
 
 // Types
 export type {

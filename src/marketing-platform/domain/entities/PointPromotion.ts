@@ -229,7 +229,7 @@ export class PointPromotion extends Promotion {
   ): boolean {
     const pointReward = this.calculatePointReward(paymentAmount);
     return (
-      this.isActive(currentDate) &&
+      this.isWithinValidPeriod(currentDate) &&
       this.meetsMinimumPayment(paymentAmount) &&
       pointReward > 0 &&
       this.hasSufficientPoints(pointReward)
