@@ -1,1 +1,4 @@
-export { GetAllPromotionsUseCase } from "./useCases";
+export {
+  GetAllPromotionsUseCase,
+  GetPromotionApplicationDetailsUseCase,
+} from "./useCases";
