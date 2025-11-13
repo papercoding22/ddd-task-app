@@ -44,7 +44,10 @@ export class RewardCoupon extends Coupon {
     couponGrantMinPrice: number | null;
     receivedCouponQuantity: number;
   }) {
-    super(params);
+    super({
+      ...params,
+      distributionType: "REWARD",
+    });
 
     this.couponGrantYn = params.couponGrantYn;
     this.couponGrantMinPrice = params.couponGrantMinPrice;
