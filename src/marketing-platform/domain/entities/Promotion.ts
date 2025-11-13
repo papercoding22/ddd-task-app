@@ -18,8 +18,8 @@ const MAX_TITLE_LENGTH = 300;
 export abstract class Promotion {
   protected readonly id: string;
   protected title: string;
-  protected startDate: Date;
-  protected endDate: Date;
+  private startDate: Date;
+  private endDate: Date;
   protected readonly promotionType: PromotionType;
   protected readonly distributionType: DistributionType;
   protected readonly productType: ProductType;
@@ -80,6 +80,20 @@ export abstract class Promotion {
         `Start date (${startDate.toISOString()}) must be before end date (${endDate.toISOString()})`
       );
     }
+  }
+
+  /**
+   * Protected getter for startDate - used by subclasses
+   */
+  protected get internalStartDate(): Date {
+    return this.startDate;
+  }
+
+  /**
+   * Protected getter for endDate - used by subclasses
+   */
+  protected get internalEndDate(): Date {
+    return this.endDate;
   }
 
   /**

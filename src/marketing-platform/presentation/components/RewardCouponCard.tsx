@@ -26,6 +26,10 @@ export const RewardCouponCard: React.FC<RewardCouponCardProps> = ({
 }) => {
   const coupon = application.getPromotion() as unknown as RewardCoupon;
 
+  const lastDayToRedeem = coupon.calculateCouponExpirationDate(
+    coupon.getEndDate()
+  );
+
   return (
     <PromotionCardWrapper
       isSelected={isSelected}
@@ -67,11 +71,8 @@ export const RewardCouponCard: React.FC<RewardCouponCardProps> = ({
       </div>
 
       <div className="mt-4 p-3 bg-purple-50 rounded-lg border border-purple-200">
-        <p className="text-xs text-purple-700 font-semibold flex items-center gap-2">
-          <span>🎯</span>
-          <span>
-            Automatically granted when purchase qualifies!
-          </span>
+        <p className="text-xs text-purple-700 font-medium">
+          Last day to redeem: {lastDayToRedeem.toLocaleDateString()}
         </p>
       </div>
 

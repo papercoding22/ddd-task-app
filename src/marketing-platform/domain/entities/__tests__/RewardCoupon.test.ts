@@ -41,17 +41,20 @@ vi.mock("../Coupon", () => {
   class MockCoupon {
     id: string;
     title: string;
+    endDate: Date;
     validityPeriodDays: number;
     validityPeriodType: FlexibleDaysType;
 
     constructor(params: any) {
       this.id = params.id;
       this.title = params.title;
+      this.endDate = params.endDate;
       this.validityPeriodDays = params.validityPeriodDays;
       this.validityPeriodType = params.validityPeriodType;
     }
     getId = () => this.id;
     getTitle = () => this.title;
+    getEndDate = () => new Date(this.endDate);
     calculateDiscount = (paymentAmount: number) =>
       paymentAmount > 50 ? 10 : 0;
   }
@@ -117,13 +120,24 @@ describe("RewardCoupon", () => {
   });
 
   describe("calculateCouponExpirationDate", () => {
-    it("should calculate the correct expiration date", () => {
-      const coupon = new RewardCoupon({ ...defaultParams, validityPeriodDays: 15 });
+    it("should calculate the correct expiration date for FLEXIBLE_DAYS", () => {
+      const coupon = new RewardCoupon({ ...defaultParams, validityPeriodDays: 15, validityPeriodType: "FLEXIBLE_DAYS" });
       const issueDate = new Date("2023-05-10");
       const expectedExpiration = new Date("2023-05-25");
       expect(coupon.calculateCouponExpirationDate(issueDate)).toEqual(
         expectedExpiration
       );
+    });
+
+    it("should return promotion end date for FIXED_DATE", () => {
+      const endDate = new Date("2023-12-31");
+      const coupon = new RewardCoupon({
+        ...defaultParams,
+        validityPeriodType: "FIXED_DATE",
+        endDate
+      });
+      const issueDate = new Date("2023-05-10");
+      expect(coupon.calculateCouponExpirationDate(issueDate)).toEqual(endDate);
     });
   });
 

@@ -81,6 +81,11 @@ export class RewardCoupon extends Coupon {
    * @param issueDate - The issue date to calculate expiration from
    */
   public calculateCouponExpirationDate(issueDate: Date = new Date()): Date {
+    if (this.validityPeriodType === "FIXED_DATE") {
+      return this.getEndDate();
+    }
+
+    // FLEXIBLE_DATE: Add validity period days to issue date
     const endDate = new Date(issueDate);
     endDate.setDate(endDate.getDate() + this.validityPeriodDays);
     return endDate;
