@@ -8,6 +8,7 @@ import {
   StatItem,
   DateRange,
   StatusIndicators,
+  ViewDetailsButton,
   type PromotionTypeInfo,
 } from "./";
 
@@ -83,6 +84,15 @@ export const PointPromotionCard: React.FC<PointPromotionCardProps> = ({
           label: promotion.hasSufficientPoints(100)
             ? "Points Available"
             : "Low Points",
+        }}
+      />
+
+      <ViewDetailsButton
+        variant="amber"
+        onClick={(e) => {
+          e.stopPropagation();
+          // TODO: Navigate to detail page
+          console.log("Navigate to point promotion details:", application.getApplySeq());
         }}
       />
     </PromotionCardWrapper>
