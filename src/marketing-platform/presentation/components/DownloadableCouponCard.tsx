@@ -1,4 +1,5 @@
 import React from "react";
+import { format } from "date-fns";
 import type { PromotionApplication, DownloadableCoupon } from "../../domain";
 import {
   PromotionCardWrapper,
@@ -68,7 +69,7 @@ export const DownloadableCouponCard: React.FC<DownloadableCouponCardProps> = ({
 
       <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
         <p className="text-xs text-blue-700 font-medium">
-          Last day to redeem: {lastDayToRedeem.toLocaleDateString()}
+          Last day to redeem: {format(lastDayToRedeem, "d MMM, yyyy")}
         </p>
       </div>
 

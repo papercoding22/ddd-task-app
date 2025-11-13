@@ -12,9 +12,9 @@ describe("DateRange", () => {
 
     render(<DateRange startDate={startDate} endDate={endDate} />);
 
-    const expectedDateString = `${format(startDate, "yyyy-MM-dd")} - ${format(
+    const expectedDateString = `${format(startDate, "d MMM, yyyy")} - ${format(
       endDate,
-      "yyyy-MM-dd"
+      "d MMM, yyyy"
     )}`;
     expect(screen.getByText(expectedDateString)).toBeInTheDocument();
     expect(screen.getByText("📅")).toBeInTheDocument();
@@ -26,9 +26,9 @@ describe("DateRange", () => {
 
     render(<DateRange startDate={startDate} endDate={endDate} />);
 
-    const expectedDateString = `${format(startDate, "yyyy-MM-dd")} - ${format(
+    const expectedDateString = `${format(startDate, "d MMM, yyyy")} - ${format(
       endDate,
-      "yyyy-MM-dd"
+      "d MMM, yyyy"
     )}`;
     expect(screen.getByText(expectedDateString)).toBeInTheDocument();
   });

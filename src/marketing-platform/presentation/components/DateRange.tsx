@@ -11,7 +11,7 @@ export const DateRange: React.FC<DateRangeProps> = ({ startDate, endDate }) => (
     <div className="flex items-center gap-2 text-xs text-gray-500">
       <span>📅</span>
       <span className="font-medium">
-        {format(startDate, "yyyy-MM-dd")} - {format(endDate, "yyyy-MM-dd")}
+        {format(startDate, "d MMM, yyyy")} - {format(endDate, "d MMM, yyyy")}
       </span>
     </div>
   </div>
