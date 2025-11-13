@@ -1,409 +1,15 @@
 import React, { useState } from "react";
-import { format } from "date-fns";
 import { useGetPromotions } from "../hooks/useGetPromotions";
-import type {
-  PromotionApplication,
-  PointPromotion,
-  DownloadableCoupon,
-  RewardCoupon,
-} from "../../domain";
-
-// Type definitions for promotion styling
-interface PromotionTypeInfo {
-  type: string;
-  bgColor: string;
-  borderColor: string;
-  badgeColor: string;
-  icon: string;
-}
-
-interface PromotionCardProps {
-  application: PromotionApplication;
-  isSelected: boolean;
-  onToggle: (applySeq: number) => void;
-  typeInfo: PromotionTypeInfo;
-}
-
-/**
- * Reusable Card Wrapper Component
- */
-const PromotionCardWrapper: React.FC<{
-  children: React.ReactNode;
-  isSelected: boolean;
-  onClick: () => void;
-  typeInfo: PromotionTypeInfo;
-}> = ({ children, isSelected, onClick, typeInfo }) => (
-  <div
-    onClick={onClick}
-    className={`
-      relative rounded-xl p-5 cursor-pointer transition-all duration-200
-      ${typeInfo.bgColor} border-2 ${typeInfo.borderColor}
-      ${
-        isSelected
-          ? "ring-4 ring-blue-400/50 shadow-xl scale-[1.02]"
-          : "shadow-md hover:shadow-xl hover:scale-[1.01]"
-      }
-      active:scale-[0.99]
-    `}
-  >
-    {children}
-  </div>
-);
-
-/**
- * Checkbox Component
- */
-const SelectionCheckbox: React.FC<{ isSelected: boolean }> = ({
-  isSelected,
-}) => (
-  <div className="absolute top-4 right-4 z-10">
-    <div
-      className={`
-        w-7 h-7 rounded-lg border-2 flex items-center justify-center
-        transition-all duration-200
-        ${
-          isSelected
-            ? "bg-blue-500 border-blue-500 scale-110"
-            : "bg-white border-gray-300 group-hover:border-gray-400"
-        }
-      `}
-    >
-      {isSelected && (
-        <svg
-          className="w-4 h-4 text-white"
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="3"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path d="M5 13l4 4L19 7" />
-        </svg>
-      )}
-    </div>
-  </div>
-);
-
-/**
- * Card Header Component
- */
-const CardHeader: React.FC<{
-  icon: string;
-  title: string;
-  typeInfo: PromotionTypeInfo;
-  status: string;
-}> = ({ icon, title, typeInfo, status }) => (
-  <div className="flex items-start gap-3 mb-4 pr-10">
-    <div className="text-3xl flex-shrink-0 mt-1">{icon}</div>
-    <div className="flex-1 min-w-0">
-      <div className="flex flex-wrap gap-2 mb-2">
-        <span
-          className={`
-          ${typeInfo.badgeColor} text-white text-xs px-2.5 py-1 
-          rounded-md font-semibold uppercase tracking-wide
-        `}
-        >
-          {typeInfo.type}
-        </span>
-        <span className="bg-gradient-to-r from-blue-500 to-blue-600 text-white text-xs px-2.5 py-1 rounded-md font-medium">
-          {status}
-        </span>
-      </div>
-      <h3 className="font-bold text-lg text-gray-900 leading-snug break-words">
-        {title}
-      </h3>
-    </div>
-  </div>
-);
-
-/**
- * Merchant Info Component
- */
-const MerchantInfo: React.FC<{ merchantName: string }> = ({ merchantName }) => (
-  <div className="flex items-center gap-2 mb-4 pb-4 border-b border-gray-200">
-    <span className="text-gray-400">🏪</span>
-    <span className="text-sm text-gray-600 font-medium">{merchantName}</span>
-  </div>
-);
-
-/**
- * Stats Grid Item Component
- */
-const StatItem: React.FC<{
-  label: string;
-  value: string | React.ReactNode;
-}> = ({ label, value }) => (
-  <div className="bg-white/50 rounded-lg p-3">
-    <p className="text-xs text-gray-500 mb-1 font-medium">{label}</p>
-    <p className="font-bold text-gray-900 text-sm">{value}</p>
-  </div>
-);
-
-/**
- * Date Range Component
- */
-const DateRange: React.FC<{ startDate: Date; endDate: Date }> = ({
-  startDate,
-  endDate,
-}) => (
-  <div className="mt-4 pt-4 border-t border-gray-200">
-    <div className="flex items-center gap-2 text-xs text-gray-500">
-      <span>📅</span>
-      <span className="font-medium">
-        {format(startDate, "yyyy-MM-dd")} - {format(endDate, "yyyy-MM-dd")}
-      </span>
-    </div>
-  </div>
-);
-
-/**
- * Status Indicators Component
- */
-const StatusIndicators: React.FC<{
-  isActive: boolean;
-  secondaryStatus: { isPositive: boolean; label: string };
-}> = ({ isActive, secondaryStatus }) => (
-  <div className="mt-3 flex items-center gap-3 text-xs">
-    <span
-      className={`flex items-center gap-1 font-medium ${
-        isActive ? "text-green-600" : "text-gray-400"
-      }`}
-    >
-      <span className={isActive ? "animate-pulse" : ""}>●</span>
-      {isActive ? "Active" : "Inactive"}
-    </span>
-    <span className="text-gray-300">•</span>
-    <span
-      className={`font-medium ${
-        secondaryStatus.isPositive ? "text-green-600" : "text-red-500"
-      }`}
-    >
-      {secondaryStatus.label}
-    </span>
-  </div>
-);
-
-/**
- * Point Promotion Card
- */
-const PointPromotionCard: React.FC<PromotionCardProps> = ({
-  application,
-  isSelected,
-  onToggle,
-  typeInfo,
-}) => {
-  const promotion = application.getPromotion() as unknown as PointPromotion;
-
-  return (
-    <PromotionCardWrapper
-      isSelected={isSelected}
-      onClick={() => onToggle(application.getApplySeq())}
-      typeInfo={typeInfo}
-    >
-      <SelectionCheckbox isSelected={isSelected} />
-
-      <CardHeader
-        icon={typeInfo.icon}
-        title={promotion.getTitle()}
-        typeInfo={typeInfo}
-        status={application.getApplicationStatus()}
-      />
-
-      <MerchantInfo merchantName={application.getMerchantName()} />
-
-      <div className="grid grid-cols-2 gap-3">
-        <StatItem
-          label="Budget"
-          value={`${promotion.getPromotionBudget().toLocaleString()} pts`}
-        />
-        <StatItem
-          label="Remaining"
-          value={`${promotion.getRemainingPoint().toLocaleString()} pts`}
-        />
-        <StatItem
-          label="Usage"
-          value={
-            <span className="flex items-baseline gap-1">
-              {promotion.getUsedPointPercentage().toFixed(1)}%
-              <span className="text-xs text-gray-500">used</span>
-            </span>
-          }
-        />
-        <StatItem
-          label="Saving Type"
-          value={
-            promotion.getPromotionSavingType() === "FIXED_RATE"
-              ? `${promotion.getPromotionSavingRate()}%`
-              : "Fixed"
-          }
-        />
-      </div>
-
-      <DateRange
-        startDate={promotion.getStartDate()}
-        endDate={promotion.getEndDate()}
-      />
-
-      <StatusIndicators
-        isActive={application.isActive()}
-        secondaryStatus={{
-          isPositive: promotion.hasSufficientPoints(100),
-          label: promotion.hasSufficientPoints(100)
-            ? "Points Available"
-            : "Low Points",
-        }}
-      />
-    </PromotionCardWrapper>
-  );
-};
-
-/**
- * Downloadable Coupon Card
- */
-const DownloadableCouponCard: React.FC<PromotionCardProps> = ({
-  application,
-  isSelected,
-  onToggle,
-  typeInfo,
-}) => {
-  const coupon = application.getPromotion() as unknown as DownloadableCoupon;
-
-  const lastDayToRedeem = coupon.calculateCouponExpirationDate(
-    coupon.getEndDate()
-  );
-
-  return (
-    <PromotionCardWrapper
-      isSelected={isSelected}
-      onClick={() => onToggle(application.getApplySeq())}
-      typeInfo={typeInfo}
-    >
-      <SelectionCheckbox isSelected={isSelected} />
-
-      <CardHeader
-        icon={typeInfo.icon}
-        title={coupon.getTitle()}
-        typeInfo={typeInfo}
-        status={application.getApplicationStatus()}
-      />
-
-      <MerchantInfo merchantName={application.getMerchantName()} />
-
-      <div className="grid grid-cols-2 gap-3">
-        <StatItem
-          label="Discount"
-          value={`$${coupon.getCouponDiscountPrice().toLocaleString()}`}
-        />
-        <StatItem
-          label="Min Payment"
-          value={`$${coupon.getMinimumPaymentPrice().toLocaleString()}`}
-        />
-        <StatItem
-          label="Downloads"
-          value={`${coupon.getDownloadedCouponQuantity()} / ${coupon.getDownloadableCouponQuantity()}`}
-        />
-        <StatItem
-          label="Usage"
-          value={
-            <span className="flex items-baseline gap-1">
-              {coupon.calculateUsagePercentage().toFixed(1)}%
-              <span className="text-xs text-gray-500">used</span>
-            </span>
-          }
-        />
-      </div>
-
-      <DateRange startDate={coupon.getStartDate()} endDate={lastDayToRedeem} />
-
-      <StatusIndicators
-        isActive={application.isActive()}
-        secondaryStatus={{
-          isPositive: coupon.hasAvailableCoupons(),
-          label: coupon.hasAvailableCoupons()
-            ? "Coupons Available"
-            : "Sold Out",
-        }}
-      />
-    </PromotionCardWrapper>
-  );
-};
-
-/**
- * Reward Coupon Card
- */
-const RewardCouponCard: React.FC<PromotionCardProps> = ({
-  application,
-  isSelected,
-  onToggle,
-  typeInfo,
-}) => {
-  const coupon = application.getPromotion() as unknown as RewardCoupon;
-
-  const lastDayToRedeem = coupon.calculateCouponExpirationDate(
-    coupon.getEndDate()
-  );
-
-  return (
-    <PromotionCardWrapper
-      isSelected={isSelected}
-      onClick={() => onToggle(application.getApplySeq())}
-      typeInfo={typeInfo}
-    >
-      <SelectionCheckbox isSelected={isSelected} />
-
-      <CardHeader
-        icon={typeInfo.icon}
-        title={coupon.getTitle()}
-        typeInfo={typeInfo}
-        status={application.getApplicationStatus()}
-      />
-
-      <MerchantInfo merchantName={application.getMerchantName()} />
-
-      <div className="grid grid-cols-2 gap-3">
-        <StatItem
-          label="Discount"
-          value={`$${coupon.getCouponDiscountPrice().toLocaleString()}`}
-        />
-        <StatItem
-          label="Received"
-          value={coupon.getReceivedCouponQuantity().toLocaleString()}
-        />
-        <StatItem
-          label="Remaining"
-          value={coupon.getRemainingCouponQuantity().toLocaleString()}
-        />
-        <StatItem
-          label="Auto Grant"
-          value={
-            <span
-              className={
-                coupon.isAutomaticGrantEnabled()
-                  ? "text-green-600"
-                  : "text-gray-500"
-              }
-            >
-              {coupon.isAutomaticGrantEnabled() ? "✓ Yes" : "○ No"}
-            </span>
-          }
-        />
-      </div>
-
-      <DateRange startDate={coupon.getStartDate()} endDate={lastDayToRedeem} />
-
-      <StatusIndicators
-        isActive={application.isActive()}
-        secondaryStatus={{
-          isPositive: coupon.hasAvailableCoupons(),
-          label: coupon.hasAvailableCoupons()
-            ? "Coupons Available"
-            : "No Coupons",
-        }}
-      />
-    </PromotionCardWrapper>
-  );
-};
+import type { PromotionApplication } from "../../domain";
+import {
+  PointPromotionCard,
+  DownloadableCouponCard,
+  RewardCouponCard,
+  LoadingSpinner,
+  ErrorMessage,
+  EmptyState,
+  type PromotionTypeInfo,
+} from "../components";
 
 /**
  * Mobile-first Promotion List View
@@ -426,7 +32,8 @@ export const PromotionListView: React.FC = () => {
   };
 
   const selectAll = () => {
-    setSelectedIds(new Set(promotions.map((p) => p.getApplySeq())));
+    const allIds = new Set(promotions.map((app) => app.getApplySeq()));
+    setSelectedIds(allIds);
   };
 
   const clearAll = () => {
@@ -443,26 +50,24 @@ export const PromotionListView: React.FC = () => {
     if (promotionType === "POINT_PROMOTION" && distributionType === "NA") {
       return {
         type: "Point Promotion",
+        bgColor: "bg-gradient-to-br from-blue-50 to-cyan-50",
+        borderColor: "border-blue-400",
+        badgeColor: "bg-gradient-to-r from-blue-500 to-cyan-600",
+        icon: "💎",
+      };
+    }
+
+    if (promotionType === "POINT_COUPON" && distributionType === "DOWNLOAD") {
+      return {
+        type: "Download Coupon",
         bgColor: "bg-gradient-to-br from-green-50 to-emerald-50",
         borderColor: "border-green-400",
         badgeColor: "bg-gradient-to-r from-green-500 to-emerald-600",
-        icon: "🎯",
-      };
-    } else if (
-      promotionType === "POINT_COUPON" &&
-      distributionType === "DOWNLOAD"
-    ) {
-      return {
-        type: "Downloadable",
-        bgColor: "bg-gradient-to-br from-orange-50 to-amber-50",
-        borderColor: "border-orange-400",
-        badgeColor: "bg-gradient-to-r from-orange-500 to-amber-600",
         icon: "🎫",
       };
-    } else if (
-      promotionType === "POINT_COUPON" &&
-      distributionType === "REWARD"
-    ) {
+    }
+
+    if (promotionType === "POINT_COUPON" && distributionType === "REWARD") {
       return {
         type: "Reward",
         bgColor: "bg-gradient-to-br from-purple-50 to-violet-50",
@@ -488,7 +93,7 @@ export const PromotionListView: React.FC = () => {
     const isSelected = selectedIds.has(application.getApplySeq());
     const typeInfo = getPromotionTypeInfo(application);
 
-    const cardProps: PromotionCardProps = {
+    const cardProps = {
       application,
       isSelected,
       onToggle: toggleSelection,
@@ -516,31 +121,11 @@ export const PromotionListView: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center px-4">
-        <div className="text-center">
-          <div className="relative">
-            <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-200 border-t-blue-500 mx-auto mb-4"></div>
-            <div className="absolute inset-0 rounded-full h-16 w-16 border-4 border-transparent border-t-blue-300 animate-ping mx-auto opacity-20"></div>
-          </div>
-          <p className="text-gray-600 font-medium">Loading promotions...</p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center px-4">
-        <div className="bg-white border-2 border-red-200 rounded-xl p-6 max-w-md shadow-xl">
-          <div className="flex items-center gap-3 mb-3">
-            <span className="text-3xl">⚠️</span>
-            <h3 className="text-red-800 font-bold text-xl">Error</h3>
-          </div>
-          <p className="text-red-600 leading-relaxed">{error}</p>
-        </div>
-      </div>
-    );
+    return <ErrorMessage error={error} />;
   }
 
   return (
@@ -595,15 +180,7 @@ export const PromotionListView: React.FC = () => {
       {/* Promotions List */}
       <div className="px-4 py-6 space-y-4 pb-32">
         {promotions.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="text-6xl mb-4">📭</div>
-            <p className="text-gray-500 text-lg font-medium">
-              No promotions found
-            </p>
-            <p className="text-gray-400 text-sm mt-2">
-              Check back later for new offers
-            </p>
-          </div>
+          <EmptyState />
         ) : (
           promotions.map((application) => (
             <div
