@@ -62,6 +62,7 @@ export class DownloadableCoupon extends Coupon {
   }) {
     super({
       ...params,
+      distributionType: "DOWNLOAD",
       validityPeriodType: params.flexibleDaysType,
       validityPeriodDays: params.flexibleDays,
       receivedCouponQuantity: params.downloadedCouponQuantity,
