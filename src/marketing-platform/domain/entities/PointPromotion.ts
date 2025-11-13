@@ -70,7 +70,10 @@ export class PointPromotion extends Promotion {
     remainingPoint?: number;
     remainingPointPercentage?: number;
   }) {
-    super(params);
+    super({
+      ...params,
+      distributionType: "NA",
+    });
 
     this.validateSavingRate(
       params.promotionSavingRate,
