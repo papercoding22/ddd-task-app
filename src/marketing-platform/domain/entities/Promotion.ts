@@ -18,9 +18,9 @@ export abstract class Promotion {
   protected title: string;
   protected readonly startDate: Date;
   protected readonly endDate: Date;
-  protected readonly promotionType: PromotionType;
-  protected readonly distributionType: DistributionType;
-  protected readonly productType: ProductType;
+  private readonly promotionType: PromotionType;
+  private readonly distributionType: DistributionType;
+  private readonly productType: ProductType;
 
   // Image management
   protected imageType: ImageType;
