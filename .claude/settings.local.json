@@ -3,7 +3,12 @@
     "allow": [
       "Bash(npm test:*)",
       "Bash(npm run build:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(mkdir:*)",
+      "Bash(tree:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run test:coverage:*)",
+      "Bash(yarn dev)"
     ],
     "deny": [],
     "ask": []
