@@ -9,6 +9,8 @@ import {
 } from "../types";
 import { InvalidPromotionDateException } from "../exceptions/PromotionExceptions";
 
+const MAX_TITLE_LENGTH = 300;
+
 /**
  * Abstract base class for all promotions
  * Contains common properties and behaviors shared across all promotion types
@@ -16,11 +18,11 @@ import { InvalidPromotionDateException } from "../exceptions/PromotionExceptions
 export abstract class Promotion {
   protected readonly id: string;
   protected title: string;
-  protected readonly startDate: Date;
-  protected readonly endDate: Date;
-  private readonly promotionType: PromotionType;
-  private readonly distributionType: DistributionType;
-  private readonly productType: ProductType;
+  protected startDate: Date;
+  protected endDate: Date;
+  protected readonly promotionType: PromotionType;
+  protected readonly distributionType: DistributionType;
+  protected readonly productType: ProductType;
 
   // Image management
   protected imageType: ImageType;
@@ -72,7 +74,7 @@ export abstract class Promotion {
   /**
    * Validates that start date is before end date
    */
-  private validateDates(startDate: Date, endDate: Date): void {
+  protected validateDates(startDate: Date, endDate: Date): void {
     if (startDate >= endDate) {
       throw new InvalidPromotionDateException(
         `Start date (${startDate.toISOString()}) must be before end date (${endDate.toISOString()})`
@@ -134,6 +136,9 @@ export abstract class Promotion {
   public updateTitle(title: string): void {
     if (!title || title.trim().length === 0) {
       throw new Error("Title cannot be empty");
+    }
+    if (title.length > MAX_TITLE_LENGTH) {
+      throw new Error("Title cannot exceed 300 characters.");
     }
     this.title = title;
   }
@@ -234,4 +239,25 @@ export abstract class Promotion {
    * Must be implemented by subclasses
    */
   public abstract calculateUsagePercentage(): number;
+
+  public reschedulePromotion(newStartDate: Date, newEndDate: Date, today: Date = new Date()): void {
+    // Business rule 1: newStartDate > today
+    if (newStartDate <= today) {
+      throw new InvalidPromotionDateException("New start date must be in the future.");
+    }
+
+    // Business rule 2: newEndDate is not over 365 days from today
+    const maxEndDate = new Date(today);
+    maxEndDate.setDate(maxEndDate.getDate() + 365);
+    if (newEndDate > maxEndDate) {
+      throw new InvalidPromotionDateException("New end date cannot be more than 365 days from today.");
+    }
+
+    // Also need to validate that newStartDate < newEndDate
+    this.validateDates(newStartDate, newEndDate);
+
+    this.startDate = newStartDate;
+    this.endDate = newEndDate;
+  }
+
 }

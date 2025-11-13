@@ -129,6 +129,13 @@ describe("Promotion", () => {
       expect(() => promo.updateTitle("")).toThrow("Title cannot be empty");
       expect(() => promo.updateTitle("   ")).toThrow("Title cannot be empty");
     });
+
+    it("should throw an error if title exceeds MAX_TITLE_LENGTH characters", () => {
+      const promo = new TestPromotion(defaultPromotionParams);
+      const MAX_TITLE_LENGTH = 300; // Define locally for test clarity
+      const longTitle = "a".repeat(MAX_TITLE_LENGTH + 1);
+      expect(() => promo.updateTitle(longTitle)).toThrow(`Title cannot exceed ${MAX_TITLE_LENGTH} characters.`);
+    });
   });
 
   describe("equals", () => {
@@ -197,4 +204,39 @@ describe("Promotion", () => {
       expect(promo.getExposureProductList()).toEqual(defaultPromotionParams.exposureProductList);
     });
   });
+
+  describe("reschedulePromotion", () => {
+    const today = new Date("2023-10-26T10:00:00Z");
+
+    it("should reschedule the promotion with valid dates", () => {
+      const promo = new TestPromotion(defaultPromotionParams);
+      const newStartDate = new Date("2023-11-01");
+      const newEndDate = new Date("2024-01-01");
+      promo.reschedulePromotion(newStartDate, newEndDate, today);
+      expect(promo.getStartDate()).toEqual(newStartDate);
+      expect(promo.getEndDate()).toEqual(newEndDate);
+    });
+
+    it("should throw InvalidPromotionDateException if new start date is not in the future", () => {
+      const promo = new TestPromotion(defaultPromotionParams);
+      const newStartDate = new Date("2023-10-26"); // Same as today
+      const newEndDate = new Date("2024-01-01");
+      expect(() => promo.reschedulePromotion(newStartDate, newEndDate, today)).toThrow(InvalidPromotionDateException);
+    });
+
+    it("should throw InvalidPromotionDateException if new end date is more than 365 days from today", () => {
+      const promo = new TestPromotion(defaultPromotionParams);
+      const newStartDate = new Date("2023-11-01");
+      const newEndDate = new Date("2024-10-27"); // 366 days from today
+      expect(() => promo.reschedulePromotion(newStartDate, newEndDate, today)).toThrow(InvalidPromotionDateException);
+    });
+
+    it("should throw InvalidPromotionDateException if new start date is after new end date", () => {
+      const promo = new TestPromotion(defaultPromotionParams);
+      const newStartDate = new Date("2024-01-01");
+      const newEndDate = new Date("2023-12-01");
+      expect(() => promo.reschedulePromotion(newStartDate, newEndDate, today)).toThrow(InvalidPromotionDateException);
+    });
+  });
+
 });
