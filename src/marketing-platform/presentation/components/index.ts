@@ -11,6 +11,7 @@ export { EmptyState } from "./EmptyState";
 export { PointPromotionCard } from "./PointPromotionCard";
 export { DownloadableCouponCard } from "./DownloadableCouponCard";
 export { RewardCouponCard } from "./RewardCouponCard";
+export { PromotionCard } from "./PromotionCard";
 export { PromotionHeader } from "./PromotionHeader";
 export { StatsBar } from "./StatsBar";
 export { ActionButtons, type ButtonConfig } from "./ActionButtons";
