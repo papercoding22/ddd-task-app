@@ -9,6 +9,7 @@ import {
   StatItem,
   DateRange,
   StatusIndicators,
+  ViewDetailsButton,
   type PromotionTypeInfo,
 } from "./";
 
@@ -87,6 +88,15 @@ export const DownloadableCouponCard: React.FC<DownloadableCouponCardProps> = ({
           label: coupon.hasAvailableCoupons()
             ? "Coupons Available"
             : "Sold Out",
+        }}
+      />
+
+      <ViewDetailsButton
+        variant="blue"
+        onClick={(e) => {
+          e.stopPropagation();
+          // TODO: Navigate to detail page
+          console.log("Navigate to downloadable coupon details:", application.getApplySeq());
         }}
       />
     </PromotionCardWrapper>
