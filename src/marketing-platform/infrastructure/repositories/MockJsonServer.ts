@@ -16,11 +16,7 @@ const MOCK_DATA_BY_ID: {
   34567: rewardCouponDetails,
 } as const;
 
-const MOCK_PROMOTION_LIST = [
-  pointPromotionDetails,
-  downloadableCouponDetails,
-  rewardCouponDetails,
-] as const;
+
 
 const IN_MEMORY_DB: { [applySeq: number]: ApiPromotionDto } = {
   ...MOCK_DATA_BY_ID,
