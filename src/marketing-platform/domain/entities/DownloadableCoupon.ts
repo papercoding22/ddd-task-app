@@ -23,8 +23,8 @@ export class DownloadableCoupon extends Coupon {
   private minimumPaymentPrice: number;
   private downloadableCouponQuantity: number;
   private generalQuantityPerDay: number;
-  private downloadableMultiply: number;
-  private minDownloadableQuantity: number;
+  // private downloadableMultiply: number;
+  // private minDownloadableQuantity: number;
   private multipleIssuedYn: YesNo;
 
   constructor(params: {
@@ -78,8 +78,8 @@ export class DownloadableCoupon extends Coupon {
     this.minimumPaymentPrice = params.minimumPaymentPrice;
     this.downloadableCouponQuantity = params.downloadableCouponQuantity;
     this.generalQuantityPerDay = params.generalQuantityPerDay;
-    this.downloadableMultiply = params.downloadableMultiply;
-    this.minDownloadableQuantity = params.minDownloadableQuantity;
+    // this.downloadableMultiply = params.downloadableMultiply;
+    // this.minDownloadableQuantity = params.minDownloadableQuantity;
     this.multipleIssuedYn = params.multipleIssuedYn;
   }
 

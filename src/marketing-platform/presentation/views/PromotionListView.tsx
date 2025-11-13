@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useGetPromotions } from "../hooks/useGetPromotions";
-import type { PromotionApplication } from "../../domain";
 import { getPromotionDisplayInfo } from "../utils/getPromotionDisplayInfo";
 import {
   LoadingSpinner,
@@ -8,7 +7,6 @@ import {
   EmptyState,
   StickyHeader,
   BottomActionBar,
-  type PromotionTypeInfo,
   PromotionCard,
 } from "../components";
 

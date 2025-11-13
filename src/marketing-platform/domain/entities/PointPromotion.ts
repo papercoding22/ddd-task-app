@@ -30,7 +30,7 @@ export class PointPromotion extends Promotion {
   private minimumPaymentPrice: number;
   private maximumSavingPoint: number;
   private clientLimitType: ClientLimitType;
-  private clientLimitTerm: number | null;
+  // private clientLimitTerm: number | null;
   private clientLimitCount: number | null;
   private clientLimitPoint: number | null;
   private usedPoint: number;
@@ -90,7 +90,7 @@ export class PointPromotion extends Promotion {
     this.minimumPaymentPrice = params.minimumPaymentPrice;
     this.maximumSavingPoint = params.maximumSavingPoint;
     this.clientLimitType = params.clientLimitType;
-    this.clientLimitTerm = params.clientLimitTerm;
+    // this.clientLimitTerm = params.clientLimitTerm;
     this.clientLimitCount = params.clientLimitCount;
     this.clientLimitPoint = params.clientLimitPoint;
     this.usedPoint = params.usedPoint ?? 0;

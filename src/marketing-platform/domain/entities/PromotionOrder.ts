@@ -1,8 +1,6 @@
 import {
   OrderStatusType,
   PaymentType,
-  PromotionType,
-  DistributionType,
   PaymentInfo,
 } from '../types';
 
