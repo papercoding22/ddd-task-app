@@ -234,22 +234,22 @@ const mapRewardCoupon = (
   return promotion;
 };
 
-const MAPPER_BY_TYPE = {
+const FROM_API_DTO_MAPPER_BY_TYPE = {
   POINT_PROMOTION: mapPointPromotion,
   DOWNLOADABLE_COUPON: mapDownloadableCoupon,
   REWARD_COUPON: mapRewardCoupon,
 };
 
-const getMapper = (promotionType: string, distributionType: string) => {
+const getMapperFromApiDto = (promotionType: string, distributionType: string) => {
   switch (promotionType) {
     case "POINT_PROMOTION":
-      return MAPPER_BY_TYPE.POINT_PROMOTION;
+      return FROM_API_DTO_MAPPER_BY_TYPE.POINT_PROMOTION;
     case "POINT_COUPON":
       switch (distributionType) {
         case "DOWNLOAD":
-          return MAPPER_BY_TYPE.DOWNLOADABLE_COUPON;
+          return FROM_API_DTO_MAPPER_BY_TYPE.DOWNLOADABLE_COUPON;
         case "REWARD":
-          return MAPPER_BY_TYPE.REWARD_COUPON;
+          return FROM_API_DTO_MAPPER_BY_TYPE.REWARD_COUPON;
         default:
           throw new Error(
             `No mapper found for type: ${promotionType} and distribution: ${distributionType}`
@@ -264,7 +264,7 @@ const getMapper = (promotionType: string, distributionType: string) => {
 
 export const PromotionApplicationMapper = {
   fromApiDto: (data: ApiPromotionDto): PromotionApplication => {
-    const mapper = getMapper(data.promotionType, data.distributionType);
+    const mapper = getMapperFromApiDto(data.promotionType, data.distributionType);
     return mapper(data);
   },
 };

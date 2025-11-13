@@ -22,20 +22,47 @@ const MOCK_PROMOTION_LIST = [
   rewardCouponDetails,
 ] as const;
 
+const IN_MEMORY_DB: { [applySeq: number]: ApiPromotionDto } = {
+  ...MOCK_DATA_BY_ID,
+};
+
+const fakeNetworkDelay = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
+
+const fakeDBQuery = async (applySeq: number) => {
+  await fakeNetworkDelay(500); // Simulate network delay
+  return IN_MEMORY_DB[applySeq] || null;
+};
+
+const fakeDBQueryAll = async () => {
+  await fakeNetworkDelay(700); // Simulate network delay
+  return Object.values(IN_MEMORY_DB);
+};
+
+const fakeDBSave = async (data: ApiPromotionDto) => {
+  await fakeNetworkDelay(300); // Simulate network delay
+  IN_MEMORY_DB[data.applySeq] = data;
+};
+
 export class MockJsonServer implements IPromotionApplicationRepository {
   save(application: PromotionApplication): Promise<void> {
     throw new Error("Method not implemented.");
   }
 
-  findById(applySeq: number): Promise<PromotionApplication | null> {
+  async findById(applySeq: number): Promise<PromotionApplication | null> {
+    const data = await fakeDBQuery(applySeq);
+    if (!data) {
+      return Promise.resolve(null);
+    }
     const promotionApplication = PromotionApplicationMapper.fromApiDto(
-      MOCK_DATA_BY_ID[applySeq] as ApiPromotionDto
+      data as ApiPromotionDto
     );
     return Promise.resolve(promotionApplication);
   }
 
-  findAll(): Promise<PromotionApplication[]> {
-    const promotionApplications = MOCK_PROMOTION_LIST.map((apiDto) =>
+  async findAll(): Promise<PromotionApplication[]> {
+    const data = await fakeDBQueryAll();
+    const promotionApplications = data.map((apiDto) =>
       PromotionApplicationMapper.fromApiDto(apiDto as ApiPromotionDto)
     );
     return Promise.resolve(promotionApplications);
