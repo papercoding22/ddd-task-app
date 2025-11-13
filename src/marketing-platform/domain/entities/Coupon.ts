@@ -54,6 +54,7 @@ export abstract class Coupon extends Promotion {
     remainingCouponQuantity: number;
     fullPaymentYn: YesNo;
     fullPaymentMinPrice: number;
+    // Shared property for Downloadable/Reward Coupon
     validityPeriodType: FlexibleDaysType;
     validityPeriodDays: number;
     receivedCouponQuantity: number;
