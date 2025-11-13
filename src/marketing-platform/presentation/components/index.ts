@@ -17,4 +17,5 @@ export { StatsBar } from "./StatsBar";
 export { ActionButtons, type ButtonConfig } from "./ActionButtons";
 export { StickyHeader } from "./StickyHeader";
 export { BottomActionBar } from "./BottomActionBar";
+export { Tooltip, type TooltipPosition } from "./Tooltip";
 export type { PromotionTypeInfo } from "./types";

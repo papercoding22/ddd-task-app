@@ -52,6 +52,7 @@ export const RewardCouponCard: React.FC<RewardCouponCardProps> = ({
         <StatItem
           label="Discount"
           value={`$${coupon.getCouponDiscountPrice().toLocaleString()}`}
+          tooltip="The discount amount you'll receive when this reward coupon is applied to your purchase"
         />
         <StatItem
           label="Min Grant Price"
@@ -60,6 +61,7 @@ export const RewardCouponCard: React.FC<RewardCouponCardProps> = ({
               ? `$${coupon.getCouponGrantMinPrice()?.toLocaleString()}`
               : "No minimum"
           }
+          tooltip="The minimum purchase amount required to automatically receive this reward coupon"
         />
         <StatItem
           label="Available"

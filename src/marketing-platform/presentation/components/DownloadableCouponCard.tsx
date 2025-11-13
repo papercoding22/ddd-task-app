@@ -52,10 +52,12 @@ export const DownloadableCouponCard: React.FC<DownloadableCouponCardProps> = ({
         <StatItem
           label="Discount"
           value={`$${coupon.getCouponDiscountPrice().toLocaleString()}`}
+          tooltip="The discount amount that will be deducted from your purchase when using this coupon"
         />
         <StatItem
           label="Min Payment"
           value={`$${coupon.getMinimumPaymentPrice().toLocaleString()}`}
+          tooltip="The minimum purchase amount required to use this coupon"
         />
         <StatItem
           label="Max Per User"
