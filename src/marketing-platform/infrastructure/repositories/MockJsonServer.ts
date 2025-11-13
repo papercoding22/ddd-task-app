@@ -11,9 +11,9 @@ import { PromotionApplicationMapper } from "./PromotionApplicationMapper";
 const MOCK_DATA_BY_ID: {
   [applySeq: number]: ApiPromotionDto;
 } = {
-  1001: pointPromotionDetails,
-  1002: downloadableCouponDetails,
-  1003: rewardCouponDetails,
+  12345: pointPromotionDetails,
+  23456: downloadableCouponDetails,
+  34567: rewardCouponDetails,
 } as const;
 
 const MOCK_PROMOTION_LIST = [
