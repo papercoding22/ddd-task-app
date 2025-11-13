@@ -193,7 +193,15 @@ describe('Task', () => {
 });
 ```
 
-## 🎓 Learning Resources
+-   `yarn test:coverage`: Runs the test suite and generates a coverage report.
+
+## Test Coverage
+
+The test coverage report is automatically generated and published to GitHub Pages on every push to the `main` branch.
+
+[View Coverage Report](https://papercoding22.github.io/ddd-task-app/)
+
+
 
 This application demonstrates patterns from:
 - Eric Evans' "Domain-Driven Design"
