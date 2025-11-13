@@ -18,4 +18,5 @@ export { ActionButtons, type ButtonConfig } from "./ActionButtons";
 export { StickyHeader } from "./StickyHeader";
 export { BottomActionBar } from "./BottomActionBar";
 export { Tooltip, type TooltipPosition } from "./Tooltip";
+export { ViewDetailsButton } from "./ViewDetailsButton";
 export type { PromotionTypeInfo } from "./types";
