@@ -199,6 +199,14 @@ export abstract class Promotion {
     return this.imageType;
   }
 
+  public getImageObsId(): string {
+    return this.imageObsId;
+  }
+
+  public getImageObsHash(): string {
+    return this.imageObsHash;
+  }
+
   public getImageUrl(): string {
     return this.imageUrl;
   }

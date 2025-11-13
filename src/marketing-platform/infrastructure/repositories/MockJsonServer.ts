@@ -41,8 +41,9 @@ const fakeDBSave = async (data: ApiPromotionDto) => {
 };
 
 export class MockJsonServer implements IPromotionApplicationRepository {
-  save(application: PromotionApplication): Promise<void> {
-    throw new Error("Method not implemented.");
+  async save(application: PromotionApplication): Promise<void> {
+    const apiDto = PromotionApplicationMapper.toApiDto(application);
+    await fakeDBSave(apiDto);
   }
 
   async findById(applySeq: number): Promise<PromotionApplication | null> {

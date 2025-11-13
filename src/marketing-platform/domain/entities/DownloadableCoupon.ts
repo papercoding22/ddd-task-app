@@ -23,8 +23,8 @@ export class DownloadableCoupon extends Coupon {
   private minimumPaymentPrice: number;
   private downloadableCouponQuantity: number;
   private generalQuantityPerDay: number;
-  // private downloadableMultiply: number;
-  // private minDownloadableQuantity: number;
+  private downloadableMultiply: number;
+  private minDownloadableQuantity: number;
   private multipleIssuedYn: YesNo;
 
   constructor(params: {
@@ -78,8 +78,8 @@ export class DownloadableCoupon extends Coupon {
     this.minimumPaymentPrice = params.minimumPaymentPrice;
     this.downloadableCouponQuantity = params.downloadableCouponQuantity;
     this.generalQuantityPerDay = params.generalQuantityPerDay;
-    // this.downloadableMultiply = params.downloadableMultiply;
-    // this.minDownloadableQuantity = params.minDownloadableQuantity;
+    this.downloadableMultiply = params.downloadableMultiply;
+    this.minDownloadableQuantity = params.minDownloadableQuantity;
     this.multipleIssuedYn = params.multipleIssuedYn;
   }
 
@@ -249,5 +249,35 @@ export class DownloadableCoupon extends Coupon {
 
   public getMultipleIssuedYn(): YesNo {
     return this.multipleIssuedYn;
+  }
+
+  /**
+   * Gets the flexible days type (validity period type)
+   * Alias for getValidityPeriodType() for backwards compatibility
+   */
+  public getFlexibleDaysType(): FlexibleDaysType {
+    return this.getValidityPeriodType();
+  }
+
+  /**
+   * Gets the flexible days (validity period days)
+   * Alias for getValidityPeriodDays() for backwards compatibility
+   */
+  public getFlexibleDays(): number {
+    return this.getValidityPeriodDays();
+  }
+
+  /**
+   * Gets the downloadable multiply value
+   */
+  public getDownloadableMultiply(): number {
+    return this.downloadableMultiply;
+  }
+
+  /**
+   * Gets the minimum downloadable quantity
+   */
+  public getMinDownloadableQuantity(): number {
+    return this.minDownloadableQuantity;
   }
 }
