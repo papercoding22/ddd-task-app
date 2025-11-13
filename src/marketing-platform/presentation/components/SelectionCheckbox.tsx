@@ -9,6 +9,7 @@ export const SelectionCheckbox: React.FC<SelectionCheckboxProps> = ({
 }) => (
   <div className="absolute top-4 right-4 z-10">
     <div
+      data-testid="checkbox-inner-div"
       className={`
         w-7 h-7 rounded-lg border-2 flex items-center justify-center
         transition-all duration-200
@@ -29,7 +30,7 @@ export const SelectionCheckbox: React.FC<SelectionCheckboxProps> = ({
           viewBox="0 0 24 24"
           stroke="currentColor"
         >
-          <path d="M5 13l4 4L19 7" />
+          <path d="M5 13l4 4L19 7" data-testid="checkmark-path" />
         </svg>
       )}
     </div>
