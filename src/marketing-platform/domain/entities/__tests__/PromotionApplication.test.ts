@@ -19,18 +19,29 @@ class MockPromotion {
   endDate: Date;
   promotionType: PromotionType;
   distributionType: DistributionType;
+  title: string;
 
-  constructor(startDate: Date, endDate: Date, promotionType: PromotionType, distributionType: DistributionType) {
+  constructor(startDate: Date, endDate: Date, promotionType: PromotionType, distributionType: DistributionType, title: string = "Default Title") {
     this.startDate = startDate;
     this.endDate = endDate;
     this.promotionType = promotionType;
     this.distributionType = distributionType;
+    this.title = title;
   }
 
   getStartDate = vi.fn(() => this.startDate);
   getEndDate = vi.fn(() => this.endDate);
   getPromotionType = vi.fn(() => this.promotionType);
   getDistributionType = vi.fn(() => this.distributionType);
+  updateTitle = vi.fn((title: string) => {
+    if (!title || title.trim().length === 0) {
+      throw new Error("Title cannot be empty");
+    }
+    if (title.length > 300) {
+      throw new Error("Title cannot exceed 300 characters.");
+    }
+    this.title = title;
+  });
 }
 
 // Mock PromotionOrder class
@@ -211,6 +222,112 @@ describe("PromotionApplication", () => {
       const order = new MockPromotionOrder(true, { promotionType: "POINT_PROMOTION", distributionType: "REWARD" }) as unknown as PromotionOrder;
       const app = new PromotionApplication({ ...defaultPromotionApplicationParams, promotionOrder: order });
       expect(app.validateConsistency()).toBe(false);
+    });
+  });
+
+  describe("updateTitle", () => {
+    it("should update title when application status is APPLYING", () => {
+      const promotion = new MockPromotion(
+        new Date("2023-01-01"),
+        new Date("2023-12-31"),
+        "POINT_PROMOTION",
+        "NA"
+      ) as unknown as Promotion;
+      const app = new PromotionApplication({
+        ...defaultPromotionApplicationParams,
+        applicationStatus: "APPLYING",
+        promotion
+      });
+
+      app.updateTitle("New Title");
+
+      expect(promotion.updateTitle).toHaveBeenCalledWith("New Title");
+      expect(promotion.updateTitle).toHaveBeenCalledTimes(1);
+    });
+
+    it("should throw error when application status is IN_SERVICE", () => {
+      const app = new PromotionApplication({
+        ...defaultPromotionApplicationParams,
+        applicationStatus: "IN_SERVICE"
+      });
+
+      expect(() => app.updateTitle("New Title")).toThrow(
+        "Can only update title when application status is APPLYING"
+      );
+    });
+
+    it("should throw error when application status is CANCELLED", () => {
+      const app = new PromotionApplication({
+        ...defaultPromotionApplicationParams,
+        applicationStatus: "CANCELLED"
+      });
+
+      expect(() => app.updateTitle("New Title")).toThrow(
+        "Can only update title when application status is APPLYING"
+      );
+    });
+
+    it("should throw error when application status is COMPLETED", () => {
+      const app = new PromotionApplication({
+        ...defaultPromotionApplicationParams,
+        applicationStatus: "COMPLETED"
+      });
+
+      expect(() => app.updateTitle("New Title")).toThrow(
+        "Can only update title when application status is APPLYING"
+      );
+    });
+
+    it("should propagate error from promotion when title is empty", () => {
+      const promotion = new MockPromotion(
+        new Date("2023-01-01"),
+        new Date("2023-12-31"),
+        "POINT_PROMOTION",
+        "NA"
+      ) as unknown as Promotion;
+      const app = new PromotionApplication({
+        ...defaultPromotionApplicationParams,
+        applicationStatus: "APPLYING",
+        promotion
+      });
+
+      expect(() => app.updateTitle("")).toThrow("Title cannot be empty");
+    });
+
+    it("should propagate error from promotion when title exceeds 300 characters", () => {
+      const promotion = new MockPromotion(
+        new Date("2023-01-01"),
+        new Date("2023-12-31"),
+        "POINT_PROMOTION",
+        "NA"
+      ) as unknown as Promotion;
+      const app = new PromotionApplication({
+        ...defaultPromotionApplicationParams,
+        applicationStatus: "APPLYING",
+        promotion
+      });
+
+      const longTitle = "a".repeat(301);
+      expect(() => app.updateTitle(longTitle)).toThrow("Title cannot exceed 300 characters.");
+    });
+
+    it("should allow title update with exactly 300 characters", () => {
+      const promotion = new MockPromotion(
+        new Date("2023-01-01"),
+        new Date("2023-12-31"),
+        "POINT_PROMOTION",
+        "NA"
+      ) as unknown as Promotion;
+      const app = new PromotionApplication({
+        ...defaultPromotionApplicationParams,
+        applicationStatus: "APPLYING",
+        promotion
+      });
+
+      const maxLengthTitle = "a".repeat(300);
+      app.updateTitle(maxLengthTitle);
+
+      expect(promotion.updateTitle).toHaveBeenCalledWith(maxLengthTitle);
     });
   });
 });

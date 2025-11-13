@@ -208,6 +208,17 @@ export class PromotionApplication {
   }
 
   /**
+   * Updates the promotion title, only when application status is APPLYING
+   */
+  public updateTitle(title: string): void {
+    if (this.applicationStatus !== "APPLYING") {
+      throw new Error("Can only update title when application status is APPLYING");
+    }
+
+    this.promotion.updateTitle(title);
+  }
+
+  /**
    * Gets the number of days since application
    */
   public getDaysSinceApplication(currentDate: Date = new Date()): number {
