@@ -18,6 +18,7 @@ export class RewardCoupon extends Coupon {
   private couponGrantMinPrice: number | null;
 
   constructor(params: {
+    id: string;
     title: string;
     startDate: Date;
     endDate: Date;

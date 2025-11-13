@@ -2,13 +2,10 @@ import {
   PromotionType,
   DistributionType,
   ProductType,
-  ApplicationStatus,
   ImageType,
   ExhaustionAlarmPercentages,
   YesNo,
   ExposureProduct,
-  CountryType,
-  ApplicationRouteType,
 } from "../types";
 import { InvalidPromotionDateException } from "../exceptions/PromotionExceptions";
 
@@ -17,6 +14,7 @@ import { InvalidPromotionDateException } from "../exceptions/PromotionExceptions
  * Contains common properties and behaviors shared across all promotion types
  */
 export abstract class Promotion {
+  protected readonly id: string;
   protected title: string;
   protected readonly startDate: Date;
   protected readonly endDate: Date;
@@ -38,6 +36,7 @@ export abstract class Promotion {
   protected exposureProductList: ExposureProduct[];
 
   constructor(params: {
+    id: string;
     title: string;
     startDate: Date;
     endDate: Date;
@@ -54,6 +53,7 @@ export abstract class Promotion {
   }) {
     this.validateDates(params.startDate, params.endDate);
 
+    this.id = params.id;
     this.title = params.title;
     this.startDate = params.startDate;
     this.endDate = params.endDate;
@@ -138,8 +138,22 @@ export abstract class Promotion {
     this.title = title;
   }
 
+  public getId(): string {
+    return this.id;
+  }
+
   public getTitle(): string {
     return this.title;
+  }
+
+  /**
+   * Entity equality is based on identity, not attributes
+   * Two promotions are equal if they have the same id
+   */
+  public equals(other: Promotion | null | undefined): boolean {
+    if (!other) return false;
+    if (this === other) return true;
+    return this.id === other.getId();
   }
 
   public getStartDate(): Date {

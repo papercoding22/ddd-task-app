@@ -35,6 +35,7 @@ const mapPointPromotion = (
   }
 
   const pointPromotion = new PointPromotion({
+    id: promotionData.applySeq.toString(),
     title: pointPromotionData.title,
     startDate: new Date(promotionData.startDate),
     endDate: new Date(promotionData.endDate),
@@ -105,6 +106,7 @@ const mapDownloadableCoupon = (
   }
 
   const downloadableCoupon = new DownloadableCoupon({
+    id: promotionData.applySeq.toString(),
     title: downloadableCouponData.title,
     startDate: new Date(promotionData.startDate),
     endDate: new Date(promotionData.endDate),
@@ -177,6 +179,7 @@ const mapRewardCoupon = (
   }
 
   const rewardCoupon = new RewardCoupon({
+    id: promotionData.applySeq.toString(),
     title: rewardCouponData.title,
     startDate: new Date(promotionData.startDate),
     endDate: new Date(promotionData.endDate),

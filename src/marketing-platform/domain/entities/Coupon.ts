@@ -34,6 +34,7 @@ export abstract class Coupon extends Promotion {
   protected receivedCouponQuantity: number;
 
   constructor(params: {
+    id: string;
     title: string;
     startDate: Date;
     endDate: Date;

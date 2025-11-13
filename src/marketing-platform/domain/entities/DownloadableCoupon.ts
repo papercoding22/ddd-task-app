@@ -28,6 +28,7 @@ export class DownloadableCoupon extends Coupon {
   private multipleIssuedYn: YesNo;
 
   constructor(params: {
+    id: string;
     title: string;
     startDate: Date;
     endDate: Date;

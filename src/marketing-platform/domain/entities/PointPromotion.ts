@@ -39,6 +39,7 @@ export class PointPromotion extends Promotion {
   private remainingPointPercentage: number;
 
   constructor(params: {
+    id: string;
     title: string;
     startDate: Date;
     endDate: Date;
