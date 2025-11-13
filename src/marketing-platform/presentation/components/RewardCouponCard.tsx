@@ -9,6 +9,7 @@ import {
   StatItem,
   DateRange,
   StatusIndicators,
+  ViewDetailsButton,
   type PromotionTypeInfo,
 } from "./";
 
@@ -91,6 +92,15 @@ export const RewardCouponCard: React.FC<RewardCouponCardProps> = ({
           label: coupon.hasAvailableCoupons()
             ? "Rewards Available"
             : "No Rewards",
+        }}
+      />
+
+      <ViewDetailsButton
+        variant="purple"
+        onClick={(e) => {
+          e.stopPropagation();
+          // TODO: Navigate to detail page
+          console.log("Navigate to reward coupon details:", application.getApplySeq());
         }}
       />
     </PromotionCardWrapper>
