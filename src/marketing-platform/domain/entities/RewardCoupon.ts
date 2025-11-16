@@ -39,10 +39,10 @@ export class RewardCoupon extends Coupon {
     fullPaymentMinPrice: number;
     validityPeriodType: FlexibleDaysType;
     validityPeriodDays: number;
+    receivedCouponQuantity: number;
     // Reward Coupon specific
     couponGrantYn: YesNo;
     couponGrantMinPrice: number | null;
-    receivedCouponQuantity: number;
   }) {
     super({
       ...params,
@@ -53,6 +53,9 @@ export class RewardCoupon extends Coupon {
     this.couponGrantMinPrice = params.couponGrantMinPrice;
   }
 
+  // -------------------------------------------
+  // BUSINESS LOGIC
+  // -------------------------------------------
   /**
    * Checks if automatic coupon granting is enabled
    */
@@ -79,8 +82,9 @@ export class RewardCoupon extends Coupon {
    * Calculates the coupon expiration date based on validity period
    * Implements abstract method from Coupon base class
    * @param issueDate - The issue date to calculate expiration from
+   * @returns Expiration date
    */
-  public calculateCouponExpirationDate(issueDate: Date = new Date()): Date {
+  public calculateCouponExpirationDate(issueDate: Date = this.getEndDate()): Date {
     // FLEXIBLE_DATE: Add validity period days to issue date
     const endDate = new Date(issueDate);
     endDate.setDate(endDate.getDate() + this.validityPeriodDays);
