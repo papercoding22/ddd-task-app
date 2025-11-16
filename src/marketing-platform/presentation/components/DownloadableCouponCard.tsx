@@ -28,9 +28,7 @@ export const DownloadableCouponCard: React.FC<DownloadableCouponCardProps> = ({
 }) => {
   const coupon = application.getPromotion() as unknown as DownloadableCoupon;
 
-  const lastDayToRedeem = coupon.calculateCouponExpirationDate(
-    coupon.getEndDate()
-  );
+  const lastDayToRedeem = coupon.calculateCouponExpirationDate();
 
   return (
     <PromotionCardWrapper
@@ -96,7 +94,10 @@ export const DownloadableCouponCard: React.FC<DownloadableCouponCardProps> = ({
         onClick={(e) => {
           e.stopPropagation();
           // TODO: Navigate to detail page
-          console.log("Navigate to downloadable coupon details:", application.getApplySeq());
+          console.log(
+            "Navigate to downloadable coupon details:",
+            application.getApplySeq()
+          );
         }}
       />
     </PromotionCardWrapper>
