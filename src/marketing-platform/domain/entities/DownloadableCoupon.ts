@@ -141,7 +141,9 @@ export class DownloadableCoupon extends Coupon {
    * Implements abstract method from Coupon base class
    * @param downloadDate - The download date to calculate expiration from
    */
-  public calculateCouponExpirationDate(downloadDate: Date = new Date()): Date {
+  public calculateCouponExpirationDate(
+    downloadDate: Date = this.getEndDate()
+  ): Date {
     if (this.validityPeriodType === "FIXED_DATE") {
       return this.getEndDate();
     }
