@@ -14,15 +14,22 @@ const MAX_TITLE_LENGTH = 300;
 /**
  * Abstract base class for all promotions
  * Contains common properties and behaviors shared across all promotion types
+ * Private properties ensure even subclasses cannot access and modify them directly
+ * Private properties can only be updated via methods defined in this class
+ * to enfrce consistant validation and business rules
  */
 export abstract class Promotion {
   protected readonly id: string;
+
+  // Basic details
   protected title: string;
   private startDate: Date;
   private endDate: Date;
-  protected readonly promotionType: PromotionType;
-  protected readonly distributionType: DistributionType;
-  protected readonly productType: ProductType;
+
+  // Prmotion Categories
+  private readonly promotionType: PromotionType;
+  private readonly distributionType: DistributionType;
+  private readonly productType: ProductType;
 
   // Image management
   protected imageType: ImageType;
@@ -71,6 +78,9 @@ export abstract class Promotion {
     this.exposureProductList = params.exposureProductList ?? [];
   }
 
+  // -------------------------------------------
+  // VALIDATIONS
+  // -------------------------------------------
   /**
    * Validates that start date is before end date
    */
@@ -82,97 +92,15 @@ export abstract class Promotion {
     }
   }
 
-  /**
-   * Protected getter for startDate - used by subclasses
-   */
-  protected get internalStartDate(): Date {
-    return this.startDate;
-  }
-
-  /**
-   * Protected getter for endDate - used by subclasses
-   */
-  protected get internalEndDate(): Date {
-    return this.endDate;
-  }
-
-  /**
-   * Checks if the promotion is within its valid date range
-   */
-  public isWithinValidPeriod(currentDate: Date = new Date()): boolean {
-    return currentDate >= this.startDate && currentDate <= this.endDate;
-  }
-
-  /**
-   * Checks if the promotion has started
-   */
-  public hasStarted(currentDate: Date = new Date()): boolean {
-    return currentDate >= this.startDate;
-  }
-
-  /**
-   * Checks if the promotion has ended
-   */
-  public hasEnded(currentDate: Date = new Date()): boolean {
-    return currentDate > this.endDate;
-  }
-
-  /**
-   * Ensures that the promotion is currently active
-   * @throws Error if the promotion is not active
-   */
-  protected ensureActive(currentDate: Date = new Date()): void {
-    if (!this.isWithinValidPeriod(currentDate)) {
-      throw new Error(
-        `Promotion is not active. Valid period: ${this.startDate.toISOString()} - ${this.endDate.toISOString()}`
-      );
-    }
-  }
-
-  /**
-   * Updates the image information
-   */
-  public updateImage(
-    imageType: ImageType,
-    imageObsId: string,
-    imageObsHash: string,
-    imageUrl: string
-  ): void {
-    this.imageType = imageType;
-    this.imageObsId = imageObsId;
-    this.imageObsHash = imageObsHash;
-    this.imageUrl = imageUrl;
-  }
-
-  /**
-   * Updates the promotion title
-   */
-  public updateTitle(title: string): void {
-    if (!title || title.trim().length === 0) {
-      throw new Error("Title cannot be empty");
-    }
-    if (title.length > MAX_TITLE_LENGTH) {
-      throw new Error("Title cannot exceed 300 characters.");
-    }
-    this.title = title;
-  }
-
+  // -------------------------------------------
+  // GETTERS
+  // -------------------------------------------
   public getId(): string {
     return this.id;
   }
 
   public getTitle(): string {
     return this.title;
-  }
-
-  /**
-   * Entity equality is based on identity, not attributes
-   * Two promotions are equal if they have the same id
-   */
-  public equals(other: Promotion | null | undefined): boolean {
-    if (!other) return false;
-    if (this === other) return true;
-    return this.id === other.getId();
   }
 
   public getStartDate(): Date {
@@ -223,6 +151,60 @@ export abstract class Promotion {
     return [...this.exposureProductList];
   }
 
+  // -------------------------------------------
+  // SETTERS
+  // -------------------------------------------
+  /**
+   * Updates the image information
+   */
+  public updateImage(
+    imageType: ImageType,
+    imageObsId: string,
+    imageObsHash: string,
+    imageUrl: string
+  ): void {
+    this.imageType = imageType;
+    this.imageObsId = imageObsId;
+    this.imageObsHash = imageObsHash;
+    this.imageUrl = imageUrl;
+  }
+
+  /**
+   * Updates the promotion title
+   */
+  public updateTitle(title: string): void {
+    if (!title || title.trim().length === 0) {
+      throw new Error("Title cannot be empty");
+    }
+    if (title.length > MAX_TITLE_LENGTH) {
+      throw new Error("Title cannot exceed 300 characters.");
+    }
+    this.title = title;
+  }
+
+  /**
+   * Sets the exhaustion alarm status
+   */
+  public setExhaustionAlarmYn(value: YesNo): void {
+    this.exhaustionAlarmYn = value;
+  }
+
+  /**
+   * Sets the exhaustion alarm percentage list
+   */
+  public setExhaustionAlarmPercentageList(
+    list: ExhaustionAlarmPercentages[]
+  ): void {
+    // Optionally add validation logic here, e.g., for non-empty array or valid percentages
+    this.exhaustionAlarmPercentageList = list;
+  }
+
+  
+
+  // -------------------------------------------
+  // ADDITIONAL BEHAVIORS
+  // -------------------------------------------
+
   /**
    * Gets active exposure products for the promotion
    */
@@ -257,22 +239,60 @@ export abstract class Promotion {
   }
 
   /**
-   * Abstract method to calculate usage percentage
-   * Must be implemented by subclasses
+   * Checks if the promotion is within its valid date range
    */
-  public abstract calculateUsagePercentage(): number;
+  public isWithinValidPeriod(currentDate: Date = new Date()): boolean {
+    return currentDate >= this.startDate && currentDate <= this.endDate;
+  }
 
-  public reschedulePromotion(newStartDate: Date, newEndDate: Date, today: Date = new Date()): void {
+  /**
+   * Checks if the promotion has started
+   */
+  public hasStarted(currentDate: Date = new Date()): boolean {
+    return currentDate >= this.startDate;
+  }
+
+  /**
+   * Checks if the promotion has ended
+   */
+  public hasEnded(currentDate: Date = new Date()): boolean {
+    return currentDate > this.endDate;
+  }
+
+  /**
+   * Ensures that the promotion is currently active
+   * @throws Error if the promotion is not active
+   */
+  protected ensureActive(currentDate: Date = new Date()): void {
+    if (!this.isWithinValidPeriod(currentDate)) {
+      throw new Error(
+        `Promotion is not active. Valid period: ${this.startDate.toISOString()} - ${this.endDate.toISOString()}`
+      );
+    }
+  }
+
+  // -------------------------------------------
+  // BUSINESS LOGIC
+  // -------------------------------------------
+  public reschedulePromotion(
+    newStartDate: Date,
+    newEndDate: Date,
+    today: Date = new Date()
+  ): void {
     // Business rule 1: newStartDate > today
     if (newStartDate <= today) {
-      throw new InvalidPromotionDateException("New start date must be in the future.");
+      throw new InvalidPromotionDateException(
+        "New start date must be in the future."
+      );
     }
 
     // Business rule 2: newEndDate is not over 365 days from today
     const maxEndDate = new Date(today);
     maxEndDate.setDate(maxEndDate.getDate() + 365);
     if (newEndDate > maxEndDate) {
-      throw new InvalidPromotionDateException("New end date cannot be more than 365 days from today.");
+      throw new InvalidPromotionDateException(
+        "New end date cannot be more than 365 days from today."
+      );
     }
 
     // Also need to validate that newStartDate < newEndDate
@@ -282,4 +302,23 @@ export abstract class Promotion {
     this.endDate = newEndDate;
   }
 
+  /**
+   * Entity equality is based on identity, not attributes
+   * Two promotions are equal if they have the same id
+   */
+  public equals(other: Promotion | null | undefined): boolean {
+    if (!other) return false;
+    if (this === other) return true;
+    return this.id === other.getId();
+  }
+
+  // -------------------------------------------
+  // ABSTRACT METHODS
+  // -------------------------------------------
+
+  /**
+   * Abstract method to calculate usage percentage
+   * Must be implemented by subclasses
+   */
+  public abstract calculateUsagePercentage(): number;
 }
