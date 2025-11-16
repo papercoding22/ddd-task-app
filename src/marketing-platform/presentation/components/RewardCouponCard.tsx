@@ -28,9 +28,7 @@ export const RewardCouponCard: React.FC<RewardCouponCardProps> = ({
 }) => {
   const coupon = application.getPromotion() as unknown as RewardCoupon;
 
-  const lastDayToRedeem = coupon.calculateCouponExpirationDate(
-    coupon.getEndDate()
-  );
+  const lastDayToRedeem = coupon.calculateCouponExpirationDate();
 
   return (
     <PromotionCardWrapper
@@ -100,7 +98,10 @@ export const RewardCouponCard: React.FC<RewardCouponCardProps> = ({
         onClick={(e) => {
           e.stopPropagation();
           // TODO: Navigate to detail page
-          console.log("Navigate to reward coupon details:", application.getApplySeq());
+          console.log(
+            "Navigate to reward coupon details:",
+            application.getApplySeq()
+          );
         }}
       />
     </PromotionCardWrapper>
