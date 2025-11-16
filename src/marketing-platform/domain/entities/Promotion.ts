@@ -206,8 +206,6 @@ export abstract class Promotion {
     this.exposureProductList = list;
   }
 
-  
-
   // -------------------------------------------
   // ADDITIONAL BEHAVIORS
   // -------------------------------------------
@@ -322,7 +320,6 @@ export abstract class Promotion {
   // -------------------------------------------
   // ABSTRACT METHODS
   // -------------------------------------------
-
   /**
    * Abstract method to calculate usage percentage
    * Must be implemented by subclasses

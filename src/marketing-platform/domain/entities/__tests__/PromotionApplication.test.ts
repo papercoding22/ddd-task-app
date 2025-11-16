@@ -330,4 +330,59 @@ describe("PromotionApplication", () => {
       expect(promotion.updateTitle).toHaveBeenCalledWith(maxLengthTitle);
     });
   });
+
+  describe("updateMerchantName", () => {
+    it("should update merchant name with valid input", () => {
+      const app = new PromotionApplication(defaultPromotionApplicationParams);
+
+      app.updateMerchantName("New Merchant Name");
+
+      expect(app.getMerchantName()).toBe("New Merchant Name");
+    });
+
+    it("should throw error when merchant name is empty string", () => {
+      const app = new PromotionApplication(defaultPromotionApplicationParams);
+
+      expect(() => app.updateMerchantName("")).toThrow("Merchant name cannot be empty");
+    });
+
+    it("should throw error when merchant name is only whitespace", () => {
+      const app = new PromotionApplication(defaultPromotionApplicationParams);
+
+      expect(() => app.updateMerchantName("   ")).toThrow("Merchant name cannot be empty");
+    });
+
+    it("should allow updating merchant name multiple times", () => {
+      const app = new PromotionApplication(defaultPromotionApplicationParams);
+
+      app.updateMerchantName("First Name");
+      expect(app.getMerchantName()).toBe("First Name");
+
+      app.updateMerchantName("Second Name");
+      expect(app.getMerchantName()).toBe("Second Name");
+    });
+
+    it("should update merchant name regardless of application status", () => {
+      const statuses: ApplicationStatus[] = ["APPLYING", "IN_SERVICE", "CANCELLED", "COMPLETED"];
+
+      statuses.forEach((status) => {
+        const app = new PromotionApplication({
+          ...defaultPromotionApplicationParams,
+          applicationStatus: status
+        });
+
+        app.updateMerchantName("Updated Name");
+
+        expect(app.getMerchantName()).toBe("Updated Name");
+      });
+    });
+
+    it("should trim leading and trailing whitespace from merchant name", () => {
+      const app = new PromotionApplication(defaultPromotionApplicationParams);
+
+      app.updateMerchantName("  Merchant Name  ");
+
+      expect(app.getMerchantName()).toBe("Merchant Name");
+    });
+  });
 });

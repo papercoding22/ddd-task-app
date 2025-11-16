@@ -22,7 +22,7 @@ export class PromotionApplication {
 
   // Merchant details
   private readonly merchantId: string;
-  private readonly merchantName: string;
+  private merchantName: string;
   private readonly managerEmail: string;
   
   // Application details
@@ -216,6 +216,18 @@ export class PromotionApplication {
     }
 
     this.promotion.updateTitle(title);
+  }
+
+  /**
+   * Updates the merchant name
+   */
+  public updateMerchantName(name: string): void {
+    const trimmedName = name.trim();
+    if (!trimmedName || trimmedName.length === 0) {
+      throw new Error("Merchant name cannot be empty");
+    }
+
+    this.merchantName = trimmedName;
   }
 
   /**
