@@ -32,15 +32,15 @@ export class AIBudgetOptions {
     return this.currency;
   }
 
-  public getLowBudget(): AICouponBudgetSettings {
+  public getLowBudget(): AIBudgetSettings {
     return this.lowBudget;
   }
 
-  public getMidBudget(): AICouponBudgetSettings {
+  public getMidBudget(): AIBudgetSettings {
     return this.midBudget;
   }
 
-  public getHighBudget(): AICouponBudgetSettings {
+  public getHighBudget(): AIBudgetSettings {
     return this.highBudget;
   }
 
