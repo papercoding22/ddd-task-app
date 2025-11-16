@@ -254,5 +254,15 @@ describe("Promotion", () => {
       promo.setExhaustionAlarmPercentageList(newList);
       expect(promo.getExhaustionAlarmPercentageList()).toEqual(newList);
     });
+
+    it("should set exposureProductList", () => {
+      const promo = new TestPromotion(defaultPromotionParams);
+      expect(promo.getExposureProductList()).toEqual([]);
+      const newExposureList: ExposureProduct[] = [
+        { exposureType: "MAIN", exposureStatus: "ON", startDate: "2024-01-01", endDate: "2024-01-31", productId: "p4" },
+      ];
+      promo.setExposureProductList(newExposureList);
+      expect(promo.getExposureProductList()).toEqual(newExposureList);
+    });
   });
 });

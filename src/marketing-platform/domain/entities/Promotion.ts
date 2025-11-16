@@ -199,6 +199,13 @@ export abstract class Promotion {
     this.exhaustionAlarmPercentageList = list;
   }
 
+  /**
+   * Sets the exposure product list
+   */
+  public setExposureProductList(list: ExposureProduct[]): void {
+    this.exposureProductList = list;
+  }
+
   
 
   // -------------------------------------------
