@@ -239,4 +239,20 @@ describe("Promotion", () => {
     });
   });
 
+  describe("Setters", () => {
+    it("should set exhaustionAlarmYn", () => {
+      const promo = new TestPromotion(defaultPromotionParams);
+      expect(promo.getExhaustionAlarmYn()).toBe("N");
+      promo.setExhaustionAlarmYn("Y");
+      expect(promo.getExhaustionAlarmYn()).toBe("Y");
+    });
+
+    it("should set exhaustionAlarmPercentageList", () => {
+      const promo = new TestPromotion(defaultPromotionParams);
+      expect(promo.getExhaustionAlarmPercentageList()).toEqual([]);
+      const newList = [{ percentage: 10, threshold: 100 }];
+      promo.setExhaustionAlarmPercentageList(newList);
+      expect(promo.getExhaustionAlarmPercentageList()).toEqual(newList);
+    });
+  });
 });
