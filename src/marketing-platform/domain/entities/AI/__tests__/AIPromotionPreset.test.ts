@@ -3,6 +3,7 @@ import { AIPromotionPreset } from "../AIPromotionPreset";
 import { AIBudgetOptions } from "../AIBudgetOptions";
 import { AICouponBudgetSettings } from "../AICouponBudgetSettings";
 import { PromotionApplication } from "../../PromotionApplication";
+import { AIPromotionMetaData } from "../AIPromotionMetaData"; // Import AIPromotionMetaData
 import {
   PromotionType,
   ProductType,
@@ -10,6 +11,7 @@ import {
   YesNo,
   PromotionStatus,
   FlexibleDaysType,
+  ContentTemplate,
 } from "../../types";
 
 describe("AIPromotionPreset", () => {
@@ -79,6 +81,13 @@ describe("AIPromotionPreset", () => {
     multipleIssuedYn: "Y" as YesNo,
   });
 
+  const mockMetaData = new AIPromotionMetaData({
+    promotionGeneralInsight: { title: "General Insight", description: "General description" },
+    lowBudgetInsight: { title: "Low Insight", description: "Low description" },
+    midBudgetInsight: { title: "Mid Insight", description: "Mid description" },
+    highBudgetInsight: { title: "High Insight", description: "High description" },
+  });
+
   const defaultParams = {
     id: "preset-1",
     promotionType: "POINT_PROMOTION" as PromotionType,
@@ -86,6 +95,8 @@ describe("AIPromotionPreset", () => {
     distributionType: "ONLINE" as DistributionType,
     budgetOptions: mockBudgetOptions,
     basePromotionApplication: mockBasePromotionApplication,
+    metadata: mockMetaData,
+    matchedApplySeqs: [1, 2, 3],
   };
 
   it("should create an instance with provided parameters", () => {
@@ -98,6 +109,8 @@ describe("AIPromotionPreset", () => {
     expect(preset.getDistributionType()).toBe(defaultParams.distributionType);
     expect(preset.getBudgetOptions()).toBe(defaultParams.budgetOptions);
     expect(preset.getBasePromotionApplication()).toBe(defaultParams.basePromotionApplication);
+    expect(preset.getMetadata()).toBe(defaultParams.metadata);
+    expect(preset.getMatchedApplySeqs()).toEqual(defaultParams.matchedApplySeqs);
   });
 
   it("should return correct values via getters", () => {
@@ -108,6 +121,8 @@ describe("AIPromotionPreset", () => {
       distributionType: "OFFLINE",
       budgetOptions: mockBudgetOptions,
       basePromotionApplication: mockBasePromotionApplication,
+      metadata: mockMetaData,
+      matchedApplySeqs: [4, 5],
     });
 
     expect(preset.getId()).toBe("preset-2");
@@ -116,6 +131,28 @@ describe("AIPromotionPreset", () => {
     expect(preset.getDistributionType()).toBe("OFFLINE");
     expect(preset.getBudgetOptions()).toBe(mockBudgetOptions);
     expect(preset.getBasePromotionApplication()).toBe(mockBasePromotionApplication);
+    expect(preset.getMetadata()).toBe(mockMetaData);
+    expect(preset.getMatchedApplySeqs()).toEqual([4, 5]);
+  });
+
+  it("getMetadata should return the correct metadata", () => {
+    const preset = new AIPromotionPreset(defaultParams);
+    expect(preset.getMetadata()).toBe(mockMetaData);
+  });
+
+  it("hasMatchedApplySeqs should return true if matchedApplySeqs is not empty", () => {
+    const preset = new AIPromotionPreset(defaultParams);
+    expect(preset.hasMatchedApplySeqs()).toBe(true);
+  });
+
+  it("hasMatchedApplySeqs should return false if matchedApplySeqs is empty", () => {
+    const preset = new AIPromotionPreset({ ...defaultParams, matchedApplySeqs: [] });
+    expect(preset.hasMatchedApplySeqs()).toBe(false);
+  });
+
+  it("getMatchedApplySeqs should return the correct array of matched apply sequences", () => {
+    const preset = new AIPromotionPreset(defaultParams);
+    expect(preset.getMatchedApplySeqs()).toEqual([1, 2, 3]);
   });
 
   describe("Domain Logic Methods", () => {

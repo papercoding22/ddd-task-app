@@ -1,6 +1,7 @@
 import { DistributionType, PromotionType, ProductType } from "../../types";
 import { PromotionApplication } from "../PromotionApplication";
 import { AIBudgetOptions } from "./AIBudgetOptions";
+import { AIPromotionMetaData } from "./AIPromotionMetaData";
 
 /**
  * AI Promotion Preset Entity
@@ -19,6 +20,11 @@ export class AIPromotionPreset {
   // Base PromotionApplication
   private readonly basePromotionApplication: PromotionApplication;
 
+  // Metadata Insights
+  private readonly metadata: AIPromotionMetaData;
+
+  private readonly matchedApplySeqs: number[];
+
   constructor(params: {
     id: string;
     promotionType: PromotionType;
@@ -26,6 +32,8 @@ export class AIPromotionPreset {
     distributionType: DistributionType;
     budgetOptions: AIBudgetOptions;
     basePromotionApplication: PromotionApplication;
+    metadata: AIPromotionMetaData;
+    matchedApplySeqs: number[];
   }) {
     this.id = params.id;
     this.promotionType = params.promotionType;
@@ -33,6 +41,8 @@ export class AIPromotionPreset {
     this.distributionType = params.distributionType;
     this.budgetOptions = params.budgetOptions;
     this.basePromotionApplication = params.basePromotionApplication;
+    this.metadata = params.metadata;
+    this.matchedApplySeqs = params.matchedApplySeqs;
   }
 
   public getId(): string {
@@ -59,6 +69,14 @@ export class AIPromotionPreset {
     return this.basePromotionApplication;
   }
 
+  public getMetadata(): AIPromotionMetaData {
+    return this.metadata;
+  }
+
+  public getMatchedApplySeqs(): number[] {
+    return this.matchedApplySeqs;
+  }
+
   // ----------------------- Domain Logic Methods ---------------------- //
   public isPresetForCouponPromotion(): boolean {
     return this.promotionType === "POINT_COUPON";
@@ -80,5 +98,9 @@ export class AIPromotionPreset {
 
   public isPresetForPointPromotion(): boolean {
     return this.promotionType === "POINT_PROMOTION";
+  }
+
+  public hasMatchedApplySeqs(): boolean {
+    return this.matchedApplySeqs && this.matchedApplySeqs.length > 0;
   }
 }
