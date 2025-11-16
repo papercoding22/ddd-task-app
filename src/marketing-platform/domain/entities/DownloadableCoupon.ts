@@ -83,6 +83,10 @@ export class DownloadableCoupon extends Coupon {
     this.multipleIssuedYn = params.multipleIssuedYn;
   }
 
+  // --------------------------------------------------------------
+  // VALIDATION METHODS
+  // --------------------------------------------------------------
+
   /**
    * Validates download quantities
    */

@@ -31,7 +31,7 @@ export abstract class Coupon extends Promotion {
   protected validityPeriodDays: number;
 
   // Received/Downloaded coupon quantity tracking (common for all coupons)
-  protected receivedCouponQuantity: number;
+  private receivedCouponQuantity: number;
 
   constructor(params: {
     id: string;
@@ -227,14 +227,6 @@ export abstract class Coupon extends Promotion {
 
   public getReceivedCouponQuantity(): number {
     return this.receivedCouponQuantity;
-  }
-
-  /**
-   * Increments the received coupon quantity
-   * Used when a coupon is issued/downloaded
-   */
-  protected incrementReceivedCouponQuantity(): void {
-    this.receivedCouponQuantity++;
   }
 
   /**

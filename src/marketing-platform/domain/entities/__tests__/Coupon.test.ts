@@ -80,10 +80,6 @@ class TestCoupon extends Coupon {
   public exposeValidateCouponUsage(paymentAmount: number): void {
     this.validateCouponUsage(paymentAmount);
   }
-
-  public exposeIncrementReceivedCouponQuantity(): void {
-    this.incrementReceivedCouponQuantity();
-  }
 }
 
 const defaultCouponParams = {
@@ -250,14 +246,6 @@ describe("Coupon", () => {
     it("should not return negative final payment", () => {
       const coupon = new TestCoupon({ ...defaultCouponParams, fullPaymentYn: "N", couponDiscountPrice: 150 });
       expect(coupon.getFinalPaymentAmount(100)).toBe(0);
-    });
-  });
-
-  describe("exposeIncrementReceivedCouponQuantity", () => {
-    it("should increment receivedCouponQuantity", () => {
-      const coupon = new TestCoupon({ ...defaultCouponParams, receivedCouponQuantity: 5 });
-      coupon.exposeIncrementReceivedCouponQuantity();
-      expect(coupon.getReceivedCouponQuantity()).toBe(6);
     });
   });
 
