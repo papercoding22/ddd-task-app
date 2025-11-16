@@ -60,6 +60,8 @@ export type YesNo = "Y" | "N";
 
 export type ExposureStatus = "ON" | "OFF";
 
+export type CurrencyType = "TWD" | "JPY" | "THB" | "IDR";
+
 export type CountryType = "TW" | "JP" | "TH" | "ID";
 
 export type ReviewDetailCategoryType = "DESIGN" | "TEXT" | "OTHER";
@@ -157,3 +159,8 @@ export interface ExposureProduct {
 
 export type PromotionSavingType = "FIXED_RATE" | "FIXED_POINT";
 export type ClientLimitType = "NONE" | "DAILY" | "WEEKLY" | "MONTHLY";
+
+export interface ContentTemplate {
+  templateId: string;
+  templateData: Array<string | number>;
+}

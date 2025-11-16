@@ -12,6 +12,15 @@ export { RewardCoupon } from "./entities/RewardCoupon";
 export { PromotionOrder } from "./entities/PromotionOrder";
 export { PromotionApplication } from "./entities/PromotionApplication";
 
+// AI Entities and Value Objects
+export { AIBudgetSettings } from "./entities/AI/AIBudgetSettings";
+export { AICouponBudgetSettings } from "./entities/AI/AICouponBudgetSettings";
+export { AIDownloadableCouponBudgetSettings } from "./entities/AI/AIDownloadableCouponBudgetSettings";
+export { AIPointBudgetSettings } from "./entities/AI/AIPointBudgetSettings";
+export { AIRewardCouponBudgetSettings } from "./entities/AI/AIRewardCouponBudgetSettings";
+export { AIBudgetOptions } from "./entities/AI/AIBudgetOptions";
+export { AIPromotionPreset } from "./entities/AI/AIPromotionPreset";
+
 // Exceptions
 export {
   PromotionDomainException,
