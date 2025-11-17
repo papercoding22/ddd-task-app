@@ -23,6 +23,7 @@ export class AIPromotionPreset {
   // Metadata Insights
   private readonly metadata: AIPromotionMetaData;
 
+  // Matched On-going Promotion Application Sequences
   private readonly matchedApplySeqs: number[];
 
   constructor(params: {
@@ -78,20 +79,20 @@ export class AIPromotionPreset {
   }
 
   // ----------------------- Domain Logic Methods ---------------------- //
-  public isPresetForCouponPromotion(): boolean {
+  public isPresetForPointCouponPromotion(): boolean {
     return this.promotionType === "POINT_COUPON";
   }
 
   public isPresetForRewardCouponPromotion(): boolean {
     return (
-      this.promotionType === "POINT_COUPON" &&
+      this.isPresetForPointCouponPromotion() &&
       this.distributionType === "REWARD"
     );
   }
 
   public isPresetForDownloadableCouponPromotion(): boolean {
     return (
-      this.promotionType === "POINT_COUPON" &&
+      this.isPresetForPointCouponPromotion() &&
       this.distributionType === "DOWNLOAD"
     );
   }

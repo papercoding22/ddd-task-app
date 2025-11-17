@@ -156,14 +156,14 @@ describe("AIPromotionPreset", () => {
   });
 
   describe("Domain Logic Methods", () => {
-    it("isPresetForCouponPromotion should return true for POINT_COUPON", () => {
+    it("isPresetForPointCouponPromotion should return true for POINT_COUPON", () => {
       const preset = new AIPromotionPreset({ ...defaultParams, promotionType: "POINT_COUPON" });
-      expect(preset.isPresetForCouponPromotion()).toBe(true);
+      expect(preset.isPresetForPointCouponPromotion()).toBe(true);
     });
 
-    it("isPresetForCouponPromotion should return false for other promotion types", () => {
+    it("isPresetForPointCouponPromotion should return false for other promotion types", () => {
       const preset = new AIPromotionPreset({ ...defaultParams, promotionType: "POINT_PROMOTION" });
-      expect(preset.isPresetForCouponPromotion()).toBe(false);
+      expect(preset.isPresetForPointCouponPromotion()).toBe(false);
     });
 
     it("isPresetForRewardCouponPromotion should return true for POINT_COUPON with REWARD distribution", () => {
